@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mileage &amp; Hours Log</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mileage Log">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#08070d">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+<style>
+  :root{
+    --bg:#08070d;
+    --surface:#14111f;
+    --surface-raised:#1b1729;
+    --border:#2a2440;
+    --purple:#8b5cf6;
+    --purple-deep:#5b21b6;
+    --purple-glow: rgba(139,92,246,0.45);
+    --teal:#2dd4bf;
+    --teal-glow: rgba(45,212,191,0.45);
+    --amber:#f5a623;
+    --amber-glow: rgba(245,166,35,0.4);
+    --text:#f3f0fb;
+    --text-muted:#948aad;
+    --text-dim:#5f5678;
+    --danger:#f0668a;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(139,92,246,0.10), transparent 40%),
+      radial-gradient(circle at 85% 100%, rgba(45,212,191,0.06), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    padding:20px 16px 60px;
+  }
+  .app{max-width:1000px;margin:0 auto;}
+
+  /* Header */
+  .topbar{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:20px; flex-wrap:wrap; gap:12px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:18px;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-mark{
+    width:38px;height:38px;border-radius:9px;
+    background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 22px var(--purple-glow);
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:20px;height:20px;}
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;margin:0;letter-spacing:0.2px;}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--text-muted);}
+  .today{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--text-dim);text-align:right;}
+
+  /* Profile bar */
+  .profile-bar{display:flex; gap:8px; align-items:center; margin-bottom:14px;}
+  .profile-bar select{flex:1; min-width:0;}
+  .profile-btn{padding:10px 12px; white-space:nowrap; flex-shrink:0;}
+  #deleteProfileBtn:hover{border-color:var(--danger); color:var(--danger);}
+
+  /* Nav */
+  .nav{
+    display:flex; gap:6px; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:5px; margin-bottom:20px; overflow-x:auto;
+  }
+  .nav-item{
+    flex:1; text-align:center; padding:10px 8px; font-size:13px; font-weight:600;
+    border-radius:8px; cursor:pointer; color:var(--text-muted); white-space:nowrap;
+    transition:all .15s ease; font-family:'Space Grotesk',sans-serif; user-select:none;
+  }
+  .nav-item.active{background:linear-gradient(135deg,var(--purple),var(--purple-deep)); color:#fff; box-shadow:0 3px 14px var(--purple-glow);}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-bottom:20px;
+  }
+  .card-head{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px; font-weight:600; letter-spacing:0.6px;
+    text-transform:uppercase; color:var(--text-muted);
+    margin-bottom:16px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+
+  /* Mode tabs */
+  .mode-tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--bg);padding:4px;border-radius:10px;border:1px solid var(--border);}
+  .mode-tab, .cal-view-tab{
+    flex:1; text-align:center; padding:8px 6px; font-size:12px; font-weight:500;
+    border-radius:7px; cursor:pointer; color:var(--text-muted); transition:all .15s ease;
+    user-select:none;
+  }
+  .mode-tab.active, .cal-view-tab.active{background:var(--surface-raised); color:var(--text); box-shadow:0 0 0 1px var(--border);}
+
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12px;color:var(--text-muted);font-weight:500;}
+  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  input, textarea, select{
+    background:var(--bg); border:1px solid var(--border); border-radius:9px;
+    padding:10px 12px; color:var(--text); font-size:14px; font-family:'Inter',sans-serif;
+    outline:none; transition:border-color .15s ease;
+    width:100%;
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--purple);}
+  textarea{resize:vertical;min-height:56px;}
+  .hidden{display:none !important;}
+  .hint{font-size:11.5px;color:var(--text-dim);margin-top:-8px;margin-bottom:14px;line-height:1.4;}
+
+  /* Address autocomplete */
+  .ac-wrap{position:relative;}
+  .ac-suggestions{
+    position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:30;
+    background:var(--surface-raised); border:1px solid var(--border); border-radius:9px;
+    max-height:200px; overflow-y:auto; display:none; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  }
+  .ac-suggestions.open{display:block;}
+  .ac-item{padding:10px 12px; font-size:12.5px; line-height:1.4; cursor:pointer; border-bottom:1px solid var(--border);}
+  .ac-item:last-child{border-bottom:none;}
+  .ac-item:hover{background:var(--bg); color:var(--text);}
+
+  /* Route info */
+  .route-info{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:14px;}
+  .route-info-row{display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:4px 0;}
+  .route-info-row span{color:var(--text-muted);}
+  .route-info-row strong{font-family:'Space Mono',monospace; color:var(--text);}
+
+  .btn-secondary{
+    background:var(--bg); border:1px solid var(--border); color:var(--text);
+    padding:10px 16px; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer;
+    font-family:'Space Grotesk',sans-serif; transition:border-color .15s ease;
+  }
+  .btn-secondary:hover{border-color:var(--purple);}
+  .btn-secondary:disabled{opacity:0.5;cursor:default;}
+
+  /* Gauge */
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 0 6px;}
+  .gauge{position:relative;width:170px;height:170px;}
+  .gauge svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .gauge circle{fill:none;stroke-width:10;}
+  .gauge .track{stroke:var(--border);}
+  .gauge .fill{stroke-linecap:round;transition:stroke-dashoffset 0.7s cubic-bezier(.4,1.4,.4,1), stroke .3s ease;}
+  .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .gauge-value{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;letter-spacing:-1px;transition:color .2s ease;}
+  .gauge-unit{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .gauge-status{font-size:11px;color:var(--text-dim);margin-top:10px;min-height:14px;text-align:center;}
+
+  /* Type toggle - tap lever styled */
+  .type-toggle-wrap{margin:18px 0 20px;}
+  .type-toggle{display:flex; align-items:center; justify-content:center; gap:14px;}
+  .type-label{font-size:13px;font-weight:600;color:var(--text-dim);transition:color .2s ease;min-width:56px;text-align:center;}
+  .type-label.on{color:var(--text);}
+  .tap-switch{
+    position:relative; width:64px; height:32px; border-radius:20px;
+    border:1px solid var(--border); background:var(--bg); cursor:pointer;
+    padding:0; flex-shrink:0;
+  }
+  .tap-handle{
+    position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
+    background:linear-gradient(135deg,var(--teal),#1a9e8e);
+    box-shadow:0 0 12px var(--teal-glow);
+    transition:transform .25s cubic-bezier(.4,1.4,.4,1), background .25s ease, box-shadow .25s ease;
+  }
+  .tap-switch[data-state="work"] .tap-handle{
+    transform:translateX(32px);
+    background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+    box-shadow:0 0 12px var(--purple-glow);
+  }
+
+  .btn-primary{
+    width:100%; padding:13px; border:none; border-radius:10px; cursor:pointer;
+    background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+    color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px;
+    letter-spacing:0.3px; box-shadow:0 4px 18px var(--purple-glow);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 6px 22px var(--purple-glow);}
+  .btn-primary:active{transform:translateY(0);}
+  .btn-primary.teal{background:linear-gradient(135deg,var(--teal),#1a9e8e); box-shadow:0 4px 18px var(--teal-glow);}
+
+  /* Dashboard stats */
+  .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:650px){.summary-grid{grid-template-columns:1fr;}}
+  .stat{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:16px;}
+  .stat-label{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  .dot.work{background:var(--purple);box-shadow:0 0 6px var(--purple-glow);}
+  .dot.personal{background:var(--teal);box-shadow:0 0 6px var(--teal-glow);}
+  .dot.hours{background:var(--amber);box-shadow:0 0 6px var(--amber-glow);}
+  .stat-value{font-family:'Space Mono',monospace; font-size:23px; font-weight:700;}
+  .stat-value span{font-size:13px;color:var(--text-muted);font-weight:400;}
+
+  .split-bar{height:8px;border-radius:5px;overflow:hidden;display:flex;margin-top:16px;background:var(--bg);border:1px solid var(--border);}
+  .split-bar .seg-work{background:linear-gradient(90deg,var(--purple-deep),var(--purple));}
+  .split-bar .seg-personal{background:linear-gradient(90deg,var(--teal),#1a9e8e);}
+  .split-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-top:8px;}
+
+  /* Hours progress */
+  .hours-progress{margin-top:8px;}
+  .hours-block-label{font-size:11.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+  .hours-bar-track{height:10px;border-radius:6px;background:var(--bg);border:1px solid var(--border);overflow:hidden;margin-top:10px;}
+  .hours-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--purple-deep),var(--purple));transition:width .5s ease;}
+  .hours-bar-fill.over{background:linear-gradient(90deg,var(--amber),#e08a1a);}
+  .hours-caption{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-dim);margin-top:8px;}
+  .overtime-banner{
+    margin-top:14px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .overtime-banner.over{background:rgba(245,166,35,0.12); color:#f5c877; border:1px solid rgba(245,166,35,0.3);}
+  .overtime-banner.under{background:rgba(139,92,246,0.1); color:#c4b5fd; border:1px solid rgba(139,92,246,0.25);}
+
+  .contracted-row{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12.5px;color:var(--text-muted);}
+  .contracted-row input{width:80px;padding:6px 10px;font-size:13px;}
+
+  /* History */
+  .history-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .filter-tabs{display:flex;gap:6px;}
+  .filter-tab{padding:6px 12px;font-size:12px;border-radius:7px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:var(--bg);}
+  .filter-tab.active{color:var(--text);border-color:var(--purple);background:rgba(139,92,246,0.12);}
+
+  .trip-row{
+    display:grid; grid-template-columns:auto 1fr auto auto auto; align-items:center; gap:10px;
+    padding:13px 4px; border-bottom:1px solid var(--border);
+  }
+  .trip-row:last-child{border-bottom:none;}
+  .trip-date{font-family:'Space Mono',monospace; font-size:12px; color:var(--text-muted); white-space:nowrap;}
+  .trip-info{min-width:0;}
+  .trip-info .route{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .trip-info .purpose{font-size:12px;color:var(--text-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  @media(max-width:480px){
+    .trip-tag .tag-label{display:none;}
+    .trip-tag{padding:4px 6px;}
+  }
+  .trip-tag{
+    font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; letter-spacing:0.3px;
+    display:flex; align-items:center; gap:5px; white-space:nowrap;
+  }
+  .trip-tag.work{background:rgba(139,92,246,0.15); color:#c4b5fd;}
+  .trip-tag.personal{background:rgba(45,212,191,0.15); color:#7fe9dc;}
+  .trip-dist{font-family:'Space Mono',monospace; font-weight:700; font-size:14px; text-align:right; white-space:nowrap;}
+  .trip-actions{display:flex;justify-content:flex-end;gap:2px;}
+  .del-btn{
+    background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:6px;
+    transition:color .15s ease, background .15s ease;
+  }
+  .del-btn:hover{color:var(--danger); background:rgba(240,102,138,0.1);}
+  .edit-btn{
+    background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:6px;
+    transition:color .15s ease, background .15s ease;
+  }
+  .edit-btn:hover{color:var(--purple); background:rgba(139,92,246,0.1);}
+
+  /* Address chips */
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+  .chip{
+    font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text-muted);cursor:pointer;white-space:nowrap;
+    max-width:180px;overflow:hidden;text-overflow:ellipsis;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .chip:hover{border-color:var(--purple); color:var(--text);}
+
+  /* GPS trip */
+  .gps-status{
+    background:var(--bg); border:1px solid var(--purple); border-radius:10px; padding:12px 14px;
+    margin-bottom:14px; font-size:12.5px; color:var(--text-muted); display:none; line-height:1.5;
+  }
+  .gps-status strong{color:var(--text);}
+  .gps-cancel{background:none;border:none;color:var(--text-dim);font-size:11px;text-decoration:underline;cursor:pointer;padding:6px 0 0;display:block;}
+  .gps-cancel:hover{color:var(--danger);}
+
+  .empty-state{padding:36px 10px;text-align:center;color:var(--text-dim);font-size:13px;}
+  .empty-state strong{display:block;color:var(--text-muted);font-size:14px;margin-bottom:4px;font-family:'Space Grotesk',sans-serif;}
+
+  /* Calendar */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-nav-btn{
+    width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg);
+    color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
+  }
+  .cal-nav-btn:hover{border-color:var(--purple);}
+  .cal-month-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  .cal-dow{text-align:center;font-size:10.5px;color:var(--text-dim);font-weight:600;letter-spacing:0.4px;padding-bottom:6px;}
+  .cal-cell{
+    aspect-ratio:1;border-radius:9px;border:1px solid var(--border);background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    cursor:pointer;position:relative;transition:border-color .15s ease, background .15s ease;
+    padding:4px;
+  }
+  .cal-cell:hover{border-color:var(--purple);}
+  .cal-cell.empty{visibility:hidden;cursor:default;}
+  .cal-cell.today{border-color:var(--purple); box-shadow:0 0 0 1px var(--purple);}
+  .cal-cell.away{background:rgba(139,92,246,0.09); border-color:rgba(139,92,246,0.3);}
+  .cal-cell.over-expected{border-color:var(--amber); box-shadow:0 0 0 1px var(--amber), 0 0 10px var(--amber-glow);}
+  .cal-daynum{font-size:12.5px;font-weight:600;font-family:'Space Grotesk',sans-serif;}
+  .cal-dots{display:flex;gap:3px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .cal-hours-badge{font-size:9px;font-family:'Space Mono',monospace;color:var(--amber);}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:11px;color:var(--text-dim);}
+  .cal-legend span{display:flex;align-items:center;gap:5px;}
+  .cal-legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;}
+  .cal-legend .sw.away{background:rgba(139,92,246,0.25);border:1px solid rgba(139,92,246,0.5);}
+  .cal-legend .sw.over{background:rgba(245,166,35,0.2);border:1px solid var(--amber);}
+
+  /* Year view */
+  .year-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media(max-width:560px){.year-grid{grid-template-columns:repeat(2,1fr);}}
+  .month-card{
+    background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px;
+    cursor:pointer; transition:border-color .15s ease;
+  }
+  .month-card:hover{border-color:var(--purple);}
+  .month-card.current{border-color:var(--purple); box-shadow:0 0 0 1px var(--purple);}
+  .month-card-name{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; margin-bottom:8px;}
+  .month-bar-track{height:8px; border-radius:5px; overflow:hidden; display:flex; background:var(--surface-raised); border:1px solid var(--border);}
+  .month-bar-track .seg-work{background:linear-gradient(90deg,var(--purple-deep),var(--purple));}
+  .month-bar-track .seg-personal{background:linear-gradient(90deg,var(--teal),#1a9e8e);}
+  .month-card-stats{margin-top:8px; font-size:10.5px; color:var(--text-dim); line-height:1.6;}
+  .month-card-stats strong{color:var(--text); font-family:'Space Mono',monospace; font-weight:700;}
+
+  /* Trends */
+  .chart-wrap{position:relative; height:280px; margin-top:6px;}
+  .trend-row{
+    display:grid; grid-template-columns:auto 1fr 1fr 1fr; align-items:center; gap:12px;
+    padding:11px 4px; border-bottom:1px solid var(--border); font-size:12.5px;
+  }
+  .trend-row:last-child{border-bottom:none;}
+  .trend-row.head{color:var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:0.4px; font-weight:600;}
+  .trend-row .tm{font-family:'Space Grotesk',sans-serif; font-weight:600; color:var(--text); white-space:nowrap;}
+  .trend-row span:not(.tm){font-family:'Space Mono',monospace; color:var(--text-muted);}
+
+  /* Job cards */
+  .job-card{border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px; background:var(--bg);}
+  .job-card:last-child{margin-bottom:0;}
+  .job-card-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .job-card-title{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14.5px;}
+  .job-card-meta{font-size:12px; color:var(--text-muted); margin-top:3px;}
+  .job-card-stats{display:flex; gap:16px; margin-top:10px; font-size:12px; color:var(--text-dim);}
+  .job-card-stats strong{color:var(--text); font-family:'Space Mono',monospace;}
+  .job-status{font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap;}
+  .job-status.over{background:rgba(245,166,35,0.15); color:#f5c877;}
+  .job-status.under{background:rgba(139,92,246,0.12); color:#c4b5fd;}
+
+  /* Day modal */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(5,4,10,0.75);backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center;z-index:100;
+  }
+  .modal-overlay.open{display:flex;}
+  @media(min-width:640px){.modal-overlay{align-items:center;}}
+  .modal{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px 16px 0 0;
+    max-width:520px; width:100%; max-height:82vh; overflow-y:auto; padding:22px;
+  }
+  @media(min-width:640px){.modal{border-radius:16px;}}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .modal-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
+  .modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:2px 8px;}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;}
+  .modal-actions .btn-primary, .modal-actions .btn-secondary{flex:1;width:auto;}
+  .day-entry{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;
+  }
+  .day-entry:last-child{border-bottom:none;}
+  .day-entry .de-main{flex:1;}
+  .day-entry .de-main strong{font-size:13.5px;}
+  .day-entry .de-main div{color:var(--text-muted);font-size:11.5px;margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 17L9 8L13 14L16 9L20 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Mileage &amp; Hours Log</h1>
+        <p>Company vehicle &middot; work &amp; personal</p>
+      </div>
+    </div>
+    <div class="today" id="todayDate"></div>
+  </div>
+
+  <div class="profile-bar">
+    <select id="profileSelect"></select>
+    <button class="btn-secondary profile-btn" id="addProfileBtn" title="New profile">+ New</button>
+    <button class="btn-secondary profile-btn" id="deleteProfileBtn" title="Delete this profile">Delete</button>
+  </div>
+
+  <div class="nav">
+    <div class="nav-item active" data-view="dashboard">Dashboard</div>
+    <div class="nav-item" data-view="calendar">Calendar</div>
+    <div class="nav-item" data-view="jobs">Jobs</div>
+    <div class="nav-item" data-view="trip">Log Trip</div>
+    <div class="nav-item" data-view="hours">Log Hours</div>
+    <div class="nav-item" data-view="trends">Trends</div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="view active" id="view-dashboard">
+
+    <div class="card">
+      <div class="card-head">
+        <span id="dashMonthLabel">This month</span>
+      </div>
+      <div class="summary-grid">
+        <div class="stat">
+          <div class="stat-label"><span class="dot work"></span>Work miles</div>
+          <div class="stat-value" id="workTotal">0.0 <span>mi</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span class="dot personal"></span>Personal miles</div>
+          <div class="stat-value" id="personalTotal">0.0 <span>mi</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span class="dot hours"></span>Hours worked</div>
+          <div class="stat-value" id="hoursTotal">0.0 <span>hrs</span></div>
+        </div>
+      </div>
+      <div class="split-bar">
+        <div class="seg-work" id="segWork" style="width:0%"></div>
+        <div class="seg-personal" id="segPersonal" style="width:0%"></div>
+      </div>
+      <div class="split-caption">
+        <span id="workPct">0% work</span>
+        <span id="personalPct">0% personal</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Away from home</div>
+      <div class="summary-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="stat">
+          <div class="stat-label">Days away this month</div>
+          <div class="stat-value" id="awayDaysTotal">0 <span>days</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Jobs this month</div>
+          <div class="stat-value" id="awayJobsTotal">0</div>
+        </div>
+      </div>
+      <div class="overtime-banner under hidden" id="currentJobBanner"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Hours vs contract</div>
+
+      <div class="hours-block">
+        <div class="hours-block-label">This week (Mon&ndash;Sun) &mdash; clocked weekly</div>
+        <div class="hours-progress">
+          <div class="hours-bar-track"><div class="hours-bar-fill" id="weekBarFill" style="width:0%"></div></div>
+          <div class="hours-caption">
+            <span id="weekCaptionLeft">0.0 hrs logged</span>
+            <span id="weekCaptionRight">40 hrs/week</span>
+          </div>
+        </div>
+        <div class="overtime-banner under" id="weekOvertimeBanner">On track &mdash; 0.0 hrs to go</div>
+      </div>
+
+      <div class="hours-block" style="margin-top:20px;">
+        <div class="hours-block-label">This month &mdash; paid monthly</div>
+        <div class="hours-progress">
+          <div class="hours-bar-track"><div class="hours-bar-fill" id="hoursBarFill" style="width:0%"></div></div>
+          <div class="hours-caption">
+            <span id="hoursCaptionLeft">0.0 hrs logged</span>
+            <span id="hoursCaptionRight">160 hrs contracted</span>
+          </div>
+        </div>
+        <div class="overtime-banner under" id="overtimeBanner">On track &mdash; 0.0 hrs to go</div>
+      </div>
+
+      <div class="contracted-row">
+        Weekly hours target:
+        <input type="number" id="weeklyHours" value="40" min="0" step="1">
+      </div>
+      <div class="contracted-row">
+        Monthly contracted hours:
+        <input type="number" id="contractedHours" value="160" min="0" step="1">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="history-head">
+        <div class="card-head" style="margin-bottom:0;">Trip history</div>
+        <div class="filter-tabs">
+          <div class="filter-tab active" data-filter="all">All</div>
+          <div class="filter-tab" data-filter="work">Work</div>
+          <div class="filter-tab" data-filter="personal">Personal</div>
+        </div>
+      </div>
+      <div id="tripList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Reports</div>
+      <div class="hint" style="margin-top:-4px;">Export a clean PDF for a chosen month &mdash; a mileage log to send to your line manager, or an hours log for your own TOIL tracking.</div>
+
+      <div class="field">
+        <label for="reporterName">Your name (shown on the PDF)</label>
+        <input type="text" id="reporterName" placeholder="e.g. Joe Smith">
+      </div>
+
+      <div class="field">
+        <label for="reportMonth">Report month</label>
+        <select id="reportMonth"></select>
+      </div>
+
+      <div class="row-2">
+        <button class="btn-secondary" id="exportTripsBtn">Export trip log (PDF)</button>
+        <button class="btn-secondary" id="exportHoursBtn">Export hours log (PDF)</button>
+      </div>
+      <div class="gauge-status" id="exportStatus" style="text-align:left;margin-top:10px;"></div>
+    </div>
+
+    <div class="card" id="installCard">
+      <div class="card-head">Install on your phone</div>
+      <button class="btn-secondary" id="installBtn" style="width:100%;">Add to Home Screen</button>
+      <div class="gauge-status" id="installStatus" style="text-align:left;margin-top:10px;"></div>
+    </div>
+
+  </div>
+
+  <!-- ============ CALENDAR ============ -->
+  <div class="view" id="view-calendar">
+    <div class="card">
+      <div class="mode-tabs">
+        <div class="cal-view-tab active" data-calview="month">Month</div>
+        <div class="cal-view-tab" data-calview="year">Year</div>
+      </div>
+
+      <div id="calMonthView">
+        <div class="cal-head">
+          <button class="cal-nav-btn" id="calPrev">&#8249;</button>
+          <div class="cal-month-label" id="calMonthLabel">Month Year</div>
+          <button class="cal-nav-btn" id="calNext">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="calDow"></div>
+        <div class="cal-grid" id="calGrid" style="margin-top:5px;"></div>
+        <div class="cal-legend">
+          <span><span class="sw away"></span>Away on a job</span>
+          <span><span class="sw over"></span>Worked over expected hours</span>
+          <span><span class="dot work"></span>Work trip</span>
+          <span><span class="dot personal"></span>Personal trip</span>
+        </div>
+      </div>
+
+      <div id="calYearView" class="hidden">
+        <div class="cal-head">
+          <button class="cal-nav-btn" id="yearPrev">&#8249;</button>
+          <div class="cal-month-label" id="calYearLabel">Year</div>
+          <button class="cal-nav-btn" id="yearNext">&#8250;</button>
+        </div>
+        <div id="yearGrid"></div>
+        <div class="cal-legend">
+          <span><span class="dot work"></span>Work miles</span>
+          <span><span class="dot personal"></span>Personal miles</span>
+          <span><span class="dot hours"></span>Hours worked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ JOBS ============ -->
+  <div class="view" id="view-jobs">
+    <div class="card">
+      <div class="card-head">Log a job</div>
+      <div class="hint" style="margin-top:-4px;">A job is a shift or event that takes you away from home. Give it a date range and a general expected working time, then log your actual hours as you go &mdash; the calendar will flag any day you went over.</div>
+
+      <div class="field">
+        <label for="jobTitle">Job / event title</label>
+        <input type="text" id="jobTitle" placeholder="e.g. Co-op Live deployment">
+      </div>
+      <div class="field">
+        <label for="jobLocation">Location</label>
+        <input type="text" id="jobLocation" placeholder="e.g. Manchester">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="jobStart">Away from</label>
+          <input type="date" id="jobStart">
+        </div>
+        <div class="field">
+          <label for="jobEnd">Away until</label>
+          <input type="date" id="jobEnd">
+        </div>
+      </div>
+      <div class="field">
+        <label for="jobExpectedHours">Expected working hours per day</label>
+        <input type="number" id="jobExpectedHours" placeholder="e.g. 10" min="0" step="0.5">
+      </div>
+      <div class="field">
+        <label for="jobNotes">Notes</label>
+        <textarea id="jobNotes" placeholder="Optional details"></textarea>
+      </div>
+      <button class="btn-primary" id="addJobBtn">Save job</button>
+      <button class="btn-secondary hidden" id="cancelJobEditBtn" style="width:100%;margin-top:10px;">Cancel edit</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Jobs</div>
+      <div id="jobsList"></div>
+    </div>
+  </div>
+
+  <!-- ============ LOG TRIP ============ -->
+  <div class="view" id="view-trip">
+    <div class="card">
+      <div class="card-head">Distance calculator</div>
+
+      <div class="mode-tabs">
+        <div class="mode-tab active" data-mode="odometer">Odometer</div>
+        <div class="mode-tab" data-mode="manual">Manual</div>
+        <div class="mode-tab" data-mode="address">From &rarr; To</div>
+        <div class="mode-tab" data-mode="gps">GPS trip</div>
+      </div>
+
+      <div class="chip-row hidden" id="recentAddressChips"></div>
+
+      <div class="field">
+        <label for="tripDate">Date</label>
+        <input type="date" id="tripDate">
+      </div>
+
+      <div class="row-2">
+        <div class="field autocomplete-field">
+          <label for="fromLoc">From</label>
+          <div class="ac-wrap">
+            <input type="text" id="fromLoc" autocomplete="off" placeholder="e.g. Depot, Manchester">
+            <div class="ac-suggestions" id="fromSuggestions"></div>
+          </div>
+        </div>
+        <div class="field autocomplete-field">
+          <label for="toLoc">To</label>
+          <div class="ac-wrap">
+            <input type="text" id="toLoc" autocomplete="off" placeholder="e.g. NEC Birmingham">
+            <div class="ac-suggestions" id="toSuggestions"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="odometerInputs">
+        <div class="row-2">
+          <div class="field">
+            <label for="startOdo">Start odometer (mi)</label>
+            <input type="number" id="startOdo" placeholder="e.g. 48210" min="0" step="0.1">
+          </div>
+          <div class="field">
+            <label for="endOdo">End odometer (mi)</label>
+            <input type="number" id="endOdo" placeholder="e.g. 48267" min="0" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <div id="manualInput" class="hidden">
+        <div class="field">
+          <label for="manualDistance">Distance travelled (mi)</label>
+          <input type="number" id="manualDistance" placeholder="e.g. 57" min="0" step="0.1">
+        </div>
+      </div>
+
+      <div id="addressInput" class="hidden">
+        <div class="hint">Type at least 3 letters of an address to get suggestions, pick one for From and To, then calculate. Uses OpenStreetMap &mdash; it's a route estimate, so use odometer readings for exact mileage claims.</div>
+        <div class="field">
+          <label for="arrivalTime">Need to arrive on site by (optional)</label>
+          <input type="time" id="arrivalTime">
+        </div>
+        <button class="btn-secondary" id="calcRouteBtn" style="width:100%;margin-bottom:14px;">Calculate route</button>
+        <div class="route-info hidden" id="routeInfo">
+          <div class="route-info-row"><span>Estimated drive time</span><strong id="routeDuration">&mdash;</strong></div>
+          <div class="route-info-row" id="leaveByRow" style="display:none;"><span>Leave by</span><strong id="leaveByTime">&mdash;</strong></div>
+        </div>
+      </div>
+
+      <div id="gpsInput" class="hidden">
+        <div class="hint">Tap Start when you set off &mdash; it captures your location as the From address. Tap End when you arrive to fill in the To address and calculate the driving distance automatically.</div>
+        <div class="gps-status" id="gpsStatusBox">
+          <span id="gpsStatusText"></span>
+          <button class="gps-cancel" id="cancelGpsBtn">Cancel this trip</button>
+        </div>
+        <button class="btn-secondary" id="startGpsBtn" style="width:100%;">Start trip</button>
+        <button class="btn-primary teal hidden" id="endGpsBtn" style="width:100%;margin-top:0;">End trip</button>
+      </div>
+
+      <div class="gauge-wrap">
+        <div class="gauge">
+          <svg viewBox="0 0 120 120">
+            <circle class="track" cx="60" cy="60" r="52"></circle>
+            <circle class="fill" id="gaugeFill" cx="60" cy="60" r="52" stroke="#8b5cf6"
+              stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-value" id="gaugeValue">0.0</div>
+            <div class="gauge-unit">miles</div>
+          </div>
+        </div>
+        <div class="gauge-status" id="gaugeStatus"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Trip details</div>
+
+      <div class="field">
+        <label for="purpose">Purpose / notes</label>
+        <textarea id="purpose" placeholder="e.g. Deployment &amp; staff training"></textarea>
+      </div>
+
+      <div class="type-toggle-wrap">
+        <div class="type-toggle">
+          <span class="type-label on" id="labelPersonal">Personal</span>
+          <button class="tap-switch" id="typeToggle" data-state="personal" aria-label="Toggle trip type">
+            <span class="tap-handle"></span>
+          </button>
+          <span class="type-label" id="labelWork">Work</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="addTripBtn">Log trip</button>
+      <button class="btn-secondary hidden" id="cancelTripEditBtn" style="width:100%;margin-top:10px;">Cancel edit</button>
+    </div>
+  </div>
+
+  <!-- ============ LOG HOURS ============ -->
+  <div class="view" id="view-hours">
+    <div class="card">
+      <div class="card-head">Log hours worked</div>
+      <div class="field">
+        <label for="hoursDate">Date</label>
+        <input type="date" id="hoursDate">
+      </div>
+      <div class="field">
+        <label for="hoursWorked">Hours worked</label>
+        <input type="number" id="hoursWorked" placeholder="e.g. 8.5" min="0" step="0.25">
+      </div>
+      <div class="field">
+        <label for="hoursJob">Job (optional)</label>
+        <select id="hoursJob"><option value="">No job / general hours</option></select>
+      </div>
+      <div class="field">
+        <label for="hoursNotes">Notes</label>
+        <textarea id="hoursNotes" placeholder="e.g. Event build &amp; teardown"></textarea>
+      </div>
+      <button class="btn-primary teal" id="addHoursBtn">Log hours</button>
+      <button class="btn-secondary hidden" id="cancelHoursEditBtn" style="width:100%;margin-top:10px;">Cancel edit</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Hours history</div>
+      <div id="hoursList"></div>
+    </div>
+  </div>
+
+  <!-- ============ TRENDS ============ -->
+  <div class="view" id="view-trends">
+    <div class="card">
+      <div class="card-head">Miles &amp; hours since you started</div>
+      <div class="hint" style="margin-top:-4px;">Every month you've logged data for, side by side &mdash; work miles, personal miles, and hours worked.</div>
+      <div class="chart-wrap">
+        <canvas id="trendsChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Month by month</div>
+      <div id="trendsTable"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Day detail modal -->
+<div class="modal-overlay" id="dayModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="dayModalTitle">Day</div>
+      <button class="modal-close" id="dayModalClose">&times;</button>
+    </div>
+    <div id="dayModalEntries"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="dayAddTrip">+ Trip</button>
+      <button class="btn-secondary" id="dayAddHours">+ Hours</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const CIRC = 2 * Math.PI * 52;
+  const $ = id => document.getElementById(id);
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  const MI_PER_METER = 1 / 1609.344;
+
+  let profiles = [];
+  let activeProfileId = null;
+
+  let trips = [];
+  let hoursEntries = [];
+  let jobs = [];
+  let contractedHours = 160;
+  let weeklyHours = 40;
+  let reporterName = '';
+
+  let mode = 'odometer';
+  let filter = 'all';
+  let typeState = 'personal';
+  let currentDistance = 0;
+  let addressDistance = 0;
+  let addressDuration = 0; // minutes
+  let fromCoord = null;
+  let toCoord = null;
+  let activeAddressField = 'fromLoc';
+
+  let editingTripId = null;
+  let editingHoursId = null;
+  let editingJobId = null;
+
+  let gpsStartCoord = null;
+  let gpsStartTime = null;
+  let gpsFromAddr = '';
+
+  let calYear, calMonth; // 0-indexed month for calendar view
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+
+  $('todayDate').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  $('tripDate').value = todayISO();
+  $('hoursDate').value = todayISO();
+  $('jobStart').value = todayISO();
+  $('jobEnd').value = todayISO();
+
+  // ---------------- Storage (localStorage, scoped per profile) ----------------
+  function rawGet(key){
+    try{ return localStorage.getItem(key); }catch(e){ return null; }
+  }
+  function rawSet(key, value){
+    try{ localStorage.setItem(key, value); return true; }catch(e){ console.error(e); return false; }
+  }
+  function rawDelete(key){
+    try{ localStorage.removeItem(key); return true; }catch(e){ return false; }
+  }
+  function pKey(base){ return base + ':' + activeProfileId; }
+
+  function loadProfiles(){
+    try{
+      const raw = rawGet('app:profiles');
+      profiles = raw ? JSON.parse(raw) : [];
+    }catch(e){ profiles = []; }
+    activeProfileId = rawGet('app:activeProfileId');
+    if(!activeProfileId || !profiles.some(p=>p.id === activeProfileId)){
+      activeProfileId = profiles.length > 0 ? profiles[0].id : null;
+    }
+    if(profiles.length === 0){
+      const name = (window.prompt('Welcome — what name should this profile be saved under?', '') || 'Me').trim() || 'Me';
+      const id = 'p' + Date.now();
+      profiles = [{ id, name }];
+      activeProfileId = id;
+      rawSet('app:profiles', JSON.stringify(profiles));
+      rawSet('app:activeProfileId', activeProfileId);
+    }
+  }
+
+  function renderProfileSelect(){
+    const sel = $('profileSelect');
+    sel.innerHTML = profiles.map(p=>'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>').join('');
+    sel.value = activeProfileId;
+  }
+
+  async function switchProfile(id){
+    activeProfileId = id;
+    rawSet('app:activeProfileId', activeProfileId);
+    editingTripId = null; editingHoursId = null; editingJobId = null;
+    gpsStartCoord = null; gpsStartTime = null; gpsFromAddr = '';
+    await loadAll();
+  }
+
+  $('profileSelect').addEventListener('change', ()=>{ switchProfile($('profileSelect').value); });
+
+  $('addProfileBtn').addEventListener('click', async ()=>{
+    const name = (window.prompt('New profile name:', '') || '').trim();
+    if(!name) return;
+    const id = 'p' + Date.now();
+    profiles.push({ id, name });
+    rawSet('app:profiles', JSON.stringify(profiles));
+    renderProfileSelect();
+    await switchProfile(id);
+  });
+
+  $('deleteProfileBtn').addEventListener('click', async ()=>{
+    if(profiles.length <= 1){ window.alert('You need at least one profile.'); return; }
+    const current = profiles.find(p=>p.id===activeProfileId);
+    if(!window.confirm('Delete profile "' + (current ? current.name : '') + '" and all its logged data? This can\u2019t be undone.')) return;
+    ['trips','hoursEntries','jobs','settings','activeGpsTrip'].forEach(base=> rawDelete(pKey(base)));
+    profiles = profiles.filter(p=>p.id !== activeProfileId);
+    rawSet('app:profiles', JSON.stringify(profiles));
+    renderProfileSelect();
+    await switchProfile(profiles[0].id);
+  });
+
+  async function loadAll(){
+    try{
+      const raw = rawGet(pKey('trips'));
+      trips = raw ? JSON.parse(raw) : [];
+    }catch(e){ trips = []; }
+    try{
+      const raw = rawGet(pKey('hoursEntries'));
+      hoursEntries = raw ? JSON.parse(raw) : [];
+    }catch(e){ hoursEntries = []; }
+    try{
+      const raw = rawGet(pKey('jobs'));
+      jobs = raw ? JSON.parse(raw) : [];
+    }catch(e){ jobs = []; }
+    try{
+      const raw = rawGet(pKey('settings'));
+      const s = raw ? JSON.parse(raw) : {};
+      contractedHours = typeof s.contractedHours === 'number' ? s.contractedHours : 160;
+      weeklyHours = typeof s.weeklyHours === 'number' ? s.weeklyHours : 40;
+      reporterName = typeof s.reporterName === 'string' ? s.reporterName : '';
+    }catch(e){ contractedHours = 160; weeklyHours = 40; reporterName = ''; }
+    $('contractedHours').value = contractedHours;
+    $('weeklyHours').value = weeklyHours;
+    $('reporterName').value = reporterName;
+    $('fromLoc').value = '';
+    try{
+      const raw = rawGet(pKey('activeGpsTrip'));
+      if(raw){
+        const data = JSON.parse(raw);
+        if(data && data.coord){
+          gpsStartCoord = data.coord;
+          gpsStartTime = data.time;
+          gpsFromAddr = data.addr || '';
+          fromCoord = data.coord;
+          $('fromLoc').value = gpsFromAddr;
+        }
+      }
+    }catch(e){}
+    renderProfileSelect();
+    autoSuggestWorkForDate();
+    renderAll();
+  }
+  async function saveTrips(){ rawSet(pKey('trips'), JSON.stringify(trips)); }
+  async function saveHours(){ rawSet(pKey('hoursEntries'), JSON.stringify(hoursEntries)); }
+  async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); }
+  async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName})); }
+
+  // ---------------- Job helpers ----------------
+  function jobsForDate(dateStr){
+    return jobs.filter(j => j.startDate <= dateStr && dateStr <= j.endDate);
+  }
+  function actualHoursForDate(dateStr){
+    return hoursEntries.filter(h => h.date === dateStr).reduce((a,h)=>a+h.hours,0);
+  }
+  function dayOverExpected(dateStr){
+    const dj = jobsForDate(dateStr);
+    if(dj.length === 0) return false;
+    const expected = dj[0].expectedHours || 0;
+    if(expected <= 0) return false;
+    return actualHoursForDate(dateStr) > expected;
+  }
+  function jobDaysCount(job){
+    const s = new Date(job.startDate+'T00:00:00');
+    const e = new Date(job.endDate+'T00:00:00');
+    return Math.round((e - s) / 86400000) + 1;
+  }
+  function refreshHoursJobSelect(){
+    const sel = $('hoursJob');
+    const current = sel.value;
+    const sorted = jobs.slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    sel.innerHTML = '<option value="">No job / general hours</option>' + sorted.map(j=>
+      '<option value="' + j.id + '">' + escapeHtml(j.title) + ' (' + j.startDate + ' to ' + j.endDate + ')</option>'
+    ).join('');
+    if(sorted.some(j=>String(j.id)===current)) sel.value = current;
+  }
+
+  // ---------------- Nav ----------------
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    item.addEventListener('click', ()=> switchView(item.dataset.view));
+  });
+  function switchView(view){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+view));
+    if(view === 'calendar') renderCalendarView();
+    if(view === 'jobs') renderJobsList();
+    if(view === 'trip') renderRecentAddresses();
+    if(view === 'trends') renderTrends();
+  }
+
+  // ---------------- Trip mode tabs ----------------
+  document.querySelectorAll('.mode-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      mode = tab.dataset.mode;
+      $('odometerInputs').classList.toggle('hidden', mode!=='odometer');
+      $('manualInput').classList.toggle('hidden', mode!=='manual');
+      $('addressInput').classList.toggle('hidden', mode!=='address');
+      $('gpsInput').classList.toggle('hidden', mode!=='gps');
+      if(mode === 'gps'){ refreshGpsUI(); }
+      setGaugeStatus('');
+      updateGauge();
+    });
+  });
+  ['startOdo','endOdo','manualDistance'].forEach(id=>{ $(id).addEventListener('input', updateGauge); });
+  ['fromLoc','toLoc'].forEach(id=>{
+    $(id).addEventListener('input', ()=>{
+      if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
+    });
+  });
+  $('fromLoc').addEventListener('focus', ()=>{ activeAddressField = 'fromLoc'; });
+  $('toLoc').addEventListener('focus', ()=>{ activeAddressField = 'toLoc'; });
+
+  function computeDistance(){
+    if(mode === 'odometer'){
+      const s = parseFloat($('startOdo').value);
+      const e = parseFloat($('endOdo').value);
+      if(!isNaN(s) && !isNaN(e) && e >= s) return e - s;
+      return 0;
+    }else if(mode === 'manual'){
+      const d = parseFloat($('manualDistance').value);
+      return !isNaN(d) && d >= 0 ? d : 0;
+    }else{
+      return addressDistance || 0;
+    }
+  }
+
+  function setGaugeStatus(msg, isError){
+    $('gaugeStatus').textContent = msg || '';
+    $('gaugeStatus').style.color = isError ? 'var(--danger)' : 'var(--text-dim)';
+  }
+
+  function updateGauge(){
+    currentDistance = computeDistance();
+    $('gaugeValue').textContent = currentDistance.toFixed(1);
+    const offset = currentDistance > 0 ? CIRC - (CIRC * 0.94) : CIRC;
+    $('gaugeFill').style.strokeDashoffset = offset;
+    $('gaugeFill').setAttribute('stroke', typeState === 'work' ? '#8b5cf6' : '#2dd4bf');
+  }
+
+  // ---------------- Address autocomplete ----------------
+  function debounce(fn, delay){
+    let t;
+    return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), delay); };
+  }
+
+  async function fetchSuggestions(query){
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=5&q=' + encodeURIComponent(query);
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if(!res.ok) return [];
+    return await res.json();
+  }
+
+  function setupAutocomplete(inputId, boxId, onSelect){
+    const input = $(inputId);
+    const box = $(boxId);
+    const runSearch = debounce(async ()=>{
+      const q = input.value.trim();
+      if(q.length < 3){ box.classList.remove('open'); box.innerHTML = ''; return; }
+      let results = [];
+      try{ results = await fetchSuggestions(q); }catch(e){ results = []; }
+      if(!results.length){ box.classList.remove('open'); box.innerHTML = ''; return; }
+      box.innerHTML = results.map((r,i)=>'<div class="ac-item" data-idx="' + i + '">' + escapeHtml(r.display_name) + '</div>').join('');
+      box.classList.add('open');
+      box.querySelectorAll('.ac-item').forEach(el=>{
+        el.addEventListener('mousedown', (e)=>{
+          e.preventDefault();
+          const r = results[el.dataset.idx];
+          input.value = r.display_name;
+          onSelect({ lat: parseFloat(r.lat), lon: parseFloat(r.lon) });
+          box.classList.remove('open');
+          box.innerHTML = '';
+          if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
+        });
+      });
+    }, 400);
+    input.addEventListener('input', ()=>{ onSelect(null); runSearch(); });
+    input.addEventListener('blur', ()=>{ setTimeout(()=>box.classList.remove('open'), 150); });
+  }
+  setupAutocomplete('fromLoc', 'fromSuggestions', c=>{ fromCoord = c; });
+  setupAutocomplete('toLoc', 'toSuggestions', c=>{ toCoord = c; });
+
+  // ---------------- Address geocoding + routing ----------------
+  async function geocode(query){
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query);
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if(!res.ok) throw new Error('geocode failed');
+    const data = await res.json();
+    if(!data || !data.length) throw new Error('Address not found: ' + query);
+    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+  }
+
+  async function routeInfo(a, b){
+    const url = 'https://router.project-osrm.org/route/v1/driving/' + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=false';
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('routing failed');
+    const data = await res.json();
+    if(!data.routes || !data.routes.length) throw new Error('No route found');
+    const r = data.routes[0];
+    return { miles: r.distance * MI_PER_METER, minutes: r.duration / 60 };
+  }
+
+  function formatDuration(mins){
+    const h = Math.floor(mins / 60);
+    const m = Math.round(mins % 60);
+    return h > 0 ? (h + 'h ' + m + 'm') : (m + 'm');
+  }
+
+  function showRouteInfo(){
+    $('routeDuration').textContent = formatDuration(addressDuration);
+    $('routeInfo').classList.remove('hidden');
+    updateLeaveBy();
+  }
+  function hideRouteInfo(){
+    $('routeInfo').classList.add('hidden');
+    $('leaveByRow').style.display = 'none';
+  }
+  function updateLeaveBy(){
+    const arrival = $('arrivalTime').value;
+    if(!arrival || !addressDuration){ $('leaveByRow').style.display = 'none'; return; }
+    const tripDateVal = $('tripDate').value || todayISO();
+    const arrivalDate = new Date(tripDateVal + 'T' + arrival + ':00');
+    const leaveDate = new Date(arrivalDate.getTime() - addressDuration * 60000);
+    const hh = String(leaveDate.getHours()).padStart(2, '0');
+    const mm = String(leaveDate.getMinutes()).padStart(2, '0');
+    const dayLabel = leaveDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+    $('leaveByTime').textContent = hh + ':' + mm + ' (' + dayLabel + ')';
+    $('leaveByRow').style.display = 'flex';
+  }
+  $('arrivalTime').addEventListener('change', updateLeaveBy);
+  $('tripDate').addEventListener('change', updateLeaveBy);
+  function autoSuggestWorkForDate(){
+    if(editingTripId) return; // don't override an in-progress edit
+    if(jobsForDate($('tripDate').value).length > 0 && typeState !== 'work'){
+      typeState = 'work';
+      $('typeToggle').dataset.state = 'work';
+      $('labelWork').classList.add('on');
+      $('labelPersonal').classList.remove('on');
+      updateGauge();
+    }
+  }
+  $('tripDate').addEventListener('change', autoSuggestWorkForDate);
+
+  $('calcRouteBtn').addEventListener('click', async ()=>{
+    const fromAddr = $('fromLoc').value.trim();
+    const toAddr = $('toLoc').value.trim();
+    if(!fromAddr || !toAddr){ setGaugeStatus('Enter both a From and To address first.', true); return; }
+    $('calcRouteBtn').disabled = true;
+    $('calcRouteBtn').textContent = (fromCoord && toCoord) ? 'Calculating route…' : 'Looking up addresses…';
+    setGaugeStatus('');
+    try{
+      const fromGeo = fromCoord || await geocode(fromAddr);
+      const toGeo = toCoord || await geocode(toAddr);
+      $('calcRouteBtn').textContent = 'Calculating route…';
+      const result = await routeInfo(fromGeo, toGeo);
+      addressDistance = result.miles;
+      addressDuration = result.minutes;
+      updateGauge();
+      showRouteInfo();
+      setGaugeStatus('Route calculated ✓');
+    }catch(err){
+      addressDistance = 0;
+      addressDuration = 0;
+      updateGauge();
+      hideRouteInfo();
+      setGaugeStatus('Could not calculate that route — check the addresses, or switch to Manual / Odometer.', true);
+    }finally{
+      $('calcRouteBtn').disabled = false;
+      $('calcRouteBtn').textContent = 'Calculate route';
+    }
+  });
+
+  // ---------------- Recent addresses ----------------
+  function computeRecentAddresses(){
+    const seen = new Set();
+    const list = [];
+    trips.forEach(t=>{
+      [t.to, t.from].forEach(addr=>{
+        if(!addr) return;
+        const key = addr.toLowerCase();
+        if(!seen.has(key)){ seen.add(key); list.push(addr); }
+      });
+    });
+    jobs.forEach(j=>{
+      if(j.location){
+        const key = j.location.toLowerCase();
+        if(!seen.has(key)){ seen.add(key); list.push(j.location); }
+      }
+    });
+    return list.slice(0, 8);
+  }
+
+  function renderRecentAddresses(){
+    const box = $('recentAddressChips');
+    const list = computeRecentAddresses();
+    if(list.length === 0){ box.classList.add('hidden'); box.innerHTML = ''; return; }
+    box.classList.remove('hidden');
+    box.innerHTML = list.map((addr,i)=>'<div class="chip" data-idx="' + i + '">' + escapeHtml(addr) + '</div>').join('');
+    box.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const addr = list[chip.dataset.idx];
+        const field = $(activeAddressField);
+        field.value = addr;
+        field.dispatchEvent(new Event('input', { bubbles:true }));
+      });
+    });
+  }
+
+  // ---------------- GPS trip capture ----------------
+  function getPosition(){
+    return new Promise((resolve, reject)=>{
+      if(!navigator.geolocation){ reject(new Error('Geolocation not supported')); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        err => reject(err),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      );
+    });
+  }
+
+  async function reverseGeocode(coord){
+    try{
+      const url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + coord.lat + '&lon=' + coord.lon;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if(!res.ok) throw new Error('reverse geocode failed');
+      const data = await res.json();
+      return data.display_name || (coord.lat.toFixed(4) + ', ' + coord.lon.toFixed(4));
+    }catch(e){
+      return coord.lat.toFixed(4) + ', ' + coord.lon.toFixed(4);
+    }
+  }
+
+  function refreshGpsUI(){
+    if(gpsStartCoord){
+      $('startGpsBtn').classList.add('hidden');
+      $('endGpsBtn').classList.remove('hidden');
+      $('gpsStatusBox').style.display = 'block';
+      $('gpsStatusText').innerHTML = 'Trip in progress since <strong>' + new Date(gpsStartTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + '</strong> from <strong>' + escapeHtml(gpsFromAddr) + '</strong>';
+    }else{
+      $('startGpsBtn').classList.remove('hidden');
+      $('endGpsBtn').classList.add('hidden');
+      $('gpsStatusBox').style.display = 'none';
+    }
+  }
+
+  async function saveActiveGpsTrip(){
+    rawSet(pKey('activeGpsTrip'), JSON.stringify({ coord: gpsStartCoord, time: gpsStartTime, addr: gpsFromAddr }));
+  }
+  async function clearActiveGpsTrip(){
+    gpsStartCoord = null; gpsStartTime = null; gpsFromAddr = '';
+    rawDelete(pKey('activeGpsTrip'));
+  }
+
+  $('startGpsBtn').addEventListener('click', async ()=>{
+    $('startGpsBtn').disabled = true;
+    $('startGpsBtn').textContent = 'Getting your location…';
+    setGaugeStatus('');
+    try{
+      const coord = await getPosition();
+      const addr = await reverseGeocode(coord);
+      gpsStartCoord = coord;
+      gpsStartTime = Date.now();
+      gpsFromAddr = addr;
+      fromCoord = coord;
+      $('fromLoc').value = addr;
+      $('tripDate').value = todayISO();
+      await saveActiveGpsTrip();
+      refreshGpsUI();
+    }catch(err){
+      setGaugeStatus('Could not get your location — check that location access is allowed for this page.', true);
+    }finally{
+      $('startGpsBtn').disabled = false;
+      $('startGpsBtn').textContent = 'Start trip';
+    }
+  });
+
+  $('endGpsBtn').addEventListener('click', async ()=>{
+    $('endGpsBtn').disabled = true;
+    $('endGpsBtn').textContent = 'Getting your location…';
+    setGaugeStatus('');
+    try{
+      const coord = await getPosition();
+      const addr = await reverseGeocode(coord);
+      toCoord = coord;
+      $('toLoc').value = addr;
+      $('endGpsBtn').textContent = 'Calculating distance…';
+      const result = await routeInfo(gpsStartCoord, coord);
+      addressDistance = result.miles;
+      addressDuration = result.minutes;
+      updateGauge();
+      await clearActiveGpsTrip();
+      refreshGpsUI();
+      setGaugeStatus('Trip distance calculated ✓ — review the details below and log it.');
+    }catch(err){
+      setGaugeStatus('Could not finish the trip — check location access, then try End trip again.', true);
+    }finally{
+      $('endGpsBtn').disabled = false;
+      $('endGpsBtn').textContent = 'End trip';
+    }
+  });
+
+  $('cancelGpsBtn').addEventListener('click', async ()=>{
+    await clearActiveGpsTrip();
+    refreshGpsUI();
+    setGaugeStatus('');
+  });
+
+  // ---------------- Type toggle ----------------
+  const toggle = $('typeToggle');
+  toggle.addEventListener('click', ()=>{
+    typeState = typeState === 'work' ? 'personal' : 'work';
+    toggle.dataset.state = typeState;
+    $('labelWork').classList.toggle('on', typeState === 'work');
+    $('labelPersonal').classList.toggle('on', typeState === 'personal');
+    updateGauge();
+  });
+
+  // ---------------- Add / edit trip ----------------
+  function setTripFormEditingUI(isEditing){
+    $('addTripBtn').textContent = isEditing ? 'Update trip' : 'Log trip';
+    $('cancelTripEditBtn').classList.toggle('hidden', !isEditing);
+  }
+
+  function resetTripFormFields(keepEndAsStart){
+    const lastEnd = $('endOdo').value;
+    $('startOdo').value = keepEndAsStart && mode === 'odometer' && lastEnd ? lastEnd : '';
+    $('endOdo').value = '';
+    $('manualDistance').value = '';
+    $('purpose').value = '';
+    addressDistance = 0;
+    addressDuration = 0;
+    fromCoord = null;
+    toCoord = null;
+    hideRouteInfo();
+    updateGauge();
+  }
+
+  function editTrip(id){
+    const t = trips.find(x=>x.id===id);
+    if(!t) return;
+    editingTripId = id;
+    switchView('trip');
+    document.querySelectorAll('.mode-tab').forEach(tab=>tab.classList.toggle('active', tab.dataset.mode==='manual'));
+    mode = 'manual';
+    $('odometerInputs').classList.add('hidden');
+    $('manualInput').classList.remove('hidden');
+    $('addressInput').classList.add('hidden');
+    $('gpsInput').classList.add('hidden');
+    $('manualDistance').value = t.distance;
+    $('tripDate').value = t.date;
+    $('fromLoc').value = t.from || '';
+    $('toLoc').value = t.to || '';
+    $('purpose').value = t.purpose || '';
+    typeState = t.type;
+    $('typeToggle').dataset.state = typeState;
+    $('labelWork').classList.toggle('on', typeState === 'work');
+    $('labelPersonal').classList.toggle('on', typeState === 'personal');
+    updateGauge();
+    setGaugeStatus('Editing trip — distance shown as Manual. Update it if needed, then Update trip.');
+    setTripFormEditingUI(true);
+  }
+  window.__editTrip = editTrip;
+  window.__editTripFromModal = (id)=>{ $('dayModalOverlay').classList.remove('open'); editTrip(id); };
+
+  $('cancelTripEditBtn').addEventListener('click', ()=>{
+    editingTripId = null;
+    resetTripFormFields(false);
+    setGaugeStatus('');
+    setTripFormEditingUI(false);
+  });
+
+  $('addTripBtn').addEventListener('click', async ()=>{
+    const distance = computeDistance();
+    if(distance <= 0){
+      $('gaugeValue').style.color = '#f0668a';
+      setTimeout(()=>{ $('gaugeValue').style.color = ''; }, 700);
+      setGaugeStatus('Enter a valid distance before logging.', true);
+      return;
+    }
+    const data = {
+      date: $('tripDate').value || todayISO(),
+      from: $('fromLoc').value.trim(),
+      to: $('toLoc').value.trim(),
+      purpose: $('purpose').value.trim(),
+      type: typeState,
+      distance: Math.round(distance * 10) / 10,
+      mode: mode
+    };
+
+    const wasEditing = !!editingTripId;
+    if(wasEditing){
+      const idx = trips.findIndex(t=>t.id === editingTripId);
+      if(idx > -1) trips[idx] = Object.assign({ id: editingTripId }, data);
+      editingTripId = null;
+      setTripFormEditingUI(false);
+    }else{
+      trips.unshift(Object.assign({ id: Date.now() }, data));
+    }
+    await saveTrips();
+    resetTripFormFields(!wasEditing);
+    setGaugeStatus(wasEditing ? 'Trip updated ✓' : 'Trip logged ✓');
+    renderAll();
+  });
+
+  // ---------------- Log hours ----------------
+  $('hoursDate').addEventListener('change', ()=>{
+    const matches = jobsForDate($('hoursDate').value);
+    if(matches.length > 0) $('hoursJob').value = matches[0].id;
+  });
+
+  function setHoursFormEditingUI(isEditing){
+    $('addHoursBtn').textContent = isEditing ? 'Update hours' : 'Log hours';
+    $('cancelHoursEditBtn').classList.toggle('hidden', !isEditing);
+  }
+
+  function editHours(id){
+    const h = hoursEntries.find(x=>x.id===id);
+    if(!h) return;
+    editingHoursId = id;
+    switchView('hours');
+    $('hoursDate').value = h.date;
+    $('hoursWorked').value = h.hours;
+    $('hoursNotes').value = h.notes || '';
+    refreshHoursJobSelect();
+    $('hoursJob').value = h.jobId || '';
+    setHoursFormEditingUI(true);
+  }
+  window.__editHours = editHours;
+  window.__editHoursFromModal = (id)=>{ $('dayModalOverlay').classList.remove('open'); editHours(id); };
+
+  $('cancelHoursEditBtn').addEventListener('click', ()=>{
+    editingHoursId = null;
+    $('hoursWorked').value = '';
+    $('hoursNotes').value = '';
+    $('hoursJob').value = '';
+    setHoursFormEditingUI(false);
+  });
+
+  $('addHoursBtn').addEventListener('click', async ()=>{
+    const h = parseFloat($('hoursWorked').value);
+    if(isNaN(h) || h <= 0) return;
+    const jobId = $('hoursJob').value || null;
+    const data = {
+      date: $('hoursDate').value || todayISO(),
+      hours: h,
+      jobId: jobId,
+      notes: $('hoursNotes').value.trim()
+    };
+    if(editingHoursId){
+      const idx = hoursEntries.findIndex(x=>x.id === editingHoursId);
+      if(idx > -1) hoursEntries[idx] = Object.assign({ id: editingHoursId }, data);
+      editingHoursId = null;
+      setHoursFormEditingUI(false);
+    }else{
+      hoursEntries.unshift(Object.assign({ id: Date.now() }, data));
+    }
+    await saveHours();
+    $('hoursWorked').value = '';
+    $('hoursNotes').value = '';
+    renderAll();
+  });
+
+  // ---------------- Jobs ----------------
+  function setJobFormEditingUI(isEditing){
+    $('addJobBtn').textContent = isEditing ? 'Update job' : 'Save job';
+    $('cancelJobEditBtn').classList.toggle('hidden', !isEditing);
+  }
+
+  function resetJobForm(){
+    $('jobTitle').value = '';
+    $('jobLocation').value = '';
+    $('jobExpectedHours').value = '';
+    $('jobNotes').value = '';
+    $('jobStart').value = todayISO();
+    $('jobEnd').value = todayISO();
+  }
+
+  function editJob(id){
+    const j = jobs.find(x=>x.id===id);
+    if(!j) return;
+    editingJobId = id;
+    switchView('jobs');
+    $('jobTitle').value = j.title;
+    $('jobLocation').value = j.location || '';
+    $('jobStart').value = j.startDate;
+    $('jobEnd').value = j.endDate;
+    $('jobExpectedHours').value = j.expectedHours || '';
+    $('jobNotes').value = j.notes || '';
+    setJobFormEditingUI(true);
+  }
+  window.__editJob = editJob;
+
+  $('cancelJobEditBtn').addEventListener('click', ()=>{
+    editingJobId = null;
+    resetJobForm();
+    setJobFormEditingUI(false);
+  });
+
+  $('addJobBtn').addEventListener('click', async ()=>{
+    const title = $('jobTitle').value.trim();
+    const start = $('jobStart').value;
+    const end = $('jobEnd').value;
+    if(!title || !start || !end || end < start) return;
+    const data = {
+      title: title,
+      location: $('jobLocation').value.trim(),
+      startDate: start,
+      endDate: end,
+      expectedHours: parseFloat($('jobExpectedHours').value) || 0,
+      notes: $('jobNotes').value.trim()
+    };
+    if(editingJobId){
+      const idx = jobs.findIndex(j=>j.id === editingJobId);
+      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId }, data);
+      editingJobId = null;
+      setJobFormEditingUI(false);
+    }else{
+      jobs.unshift(Object.assign({ id: Date.now() }, data));
+    }
+    await saveJobs();
+    resetJobForm();
+    renderJobsList();
+    refreshHoursJobSelect();
+    renderDashboard();
+  });
+
+  async function deleteJob(id){
+    jobs = jobs.filter(j=>j.id !== id);
+    await saveJobs();
+    renderJobsList();
+    refreshHoursJobSelect();
+    renderDashboard();
+    if(document.getElementById('view-calendar').classList.contains('active')) renderCalendarView();
+  }
+  window.__deleteJob = deleteJob;
+
+  function renderJobsList(){
+    const list = $('jobsList');
+    if(jobs.length === 0){
+      list.innerHTML = '<div class="empty-state"><strong>No jobs logged yet</strong>Add a job above to start tracking time away from home.</div>';
+      return;
+    }
+    const sorted = jobs.slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    list.innerHTML = sorted.map(j=>{
+      const days = jobDaysCount(j);
+      const expectedTotal = j.expectedHours * days;
+      const actualTotal = hoursEntries.filter(h => h.date >= j.startDate && h.date <= j.endDate).reduce((a,h)=>a+h.hours,0);
+      const diff = actualTotal - expectedTotal;
+      const isOver = expectedTotal > 0 && diff > 0;
+      const statusHtml = expectedTotal > 0
+        ? '<span class="job-status ' + (isOver ? 'over' : 'under') + '">' + (isOver ? '+' + diff.toFixed(1) + ' hrs over' : (diff===0 ? 'On target' : diff.toFixed(1) + ' hrs under')) + '</span>'
+        : '';
+      return '<div class="job-card">'
+        + '<div class="job-card-head"><div>'
+        + '<div class="job-card-title">' + escapeHtml(j.title) + '</div>'
+        + '<div class="job-card-meta">' + (j.location ? escapeHtml(j.location) + ' &middot; ' : '') + j.startDate + ' to ' + j.endDate + ' (' + days + (days===1?' day':' days') + ' away)</div>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:2px;">' + statusHtml
+        + '<button class="edit-btn" onclick="window.__editJob(' + j.id + ')" aria-label="Edit job">&#9998;</button>'
+        + '<button class="del-btn" onclick="window.__deleteJob(' + j.id + ')" aria-label="Delete job">&times;</button></div>'
+        + '</div>'
+        + '<div class="job-card-stats">'
+        + '<span>Expected: <strong>' + (j.expectedHours || 0).toFixed(1) + ' hrs/day</strong></span>'
+        + '<span>Logged: <strong>' + actualTotal.toFixed(1) + ' hrs</strong></span>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  $('contractedHours').addEventListener('change', async ()=>{
+    const v = parseFloat($('contractedHours').value);
+    contractedHours = !isNaN(v) && v >= 0 ? v : 160;
+    await saveSettings();
+    renderDashboard();
+  });
+
+  $('weeklyHours').addEventListener('change', async ()=>{
+    const v = parseFloat($('weeklyHours').value);
+    weeklyHours = !isNaN(v) && v >= 0 ? v : 40;
+    await saveSettings();
+    renderDashboard();
+  });
+
+  $('reporterName').addEventListener('change', async ()=>{
+    reporterName = $('reporterName').value.trim();
+    await saveSettings();
+  });
+
+  // ---------------- Filters ----------------
+  document.querySelectorAll('.filter-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      filter = tab.dataset.filter;
+      renderTripList();
+    });
+  });
+
+  // ---------------- Delete ----------------
+  async function deleteTrip(id){ trips = trips.filter(t=>t.id !== id); await saveTrips(); renderAll(); }
+  async function deleteHours(id){ hoursEntries = hoursEntries.filter(h=>h.id !== id); await saveHours(); renderAll(); }
+  window.__deleteTrip = deleteTrip;
+  window.__deleteHours = deleteHours;
+
+  // ---------------- Render: master ----------------
+  function renderAll(){
+    renderDashboard();
+    renderTripList();
+    renderHoursList();
+    refreshHoursJobSelect();
+    renderReportMonthOptions();
+    if(document.getElementById('view-trip').classList.contains('active')) renderRecentAddresses();
+    if(document.getElementById('view-calendar').classList.contains('active')) renderCalendarView();
+    if(document.getElementById('view-jobs').classList.contains('active')) renderJobsList();
+    if(document.getElementById('view-trends').classList.contains('active')) renderTrends();
+  }
+
+  function isThisMonth(dateStr){
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }
+
+  function renderDashboard(){
+    $('dashMonthLabel').textContent = now.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+
+    const monthTrips = trips.filter(t=>isThisMonth(t.date));
+    const work = monthTrips.filter(t=>t.type==='work').reduce((a,t)=>a+t.distance,0);
+    const personal = monthTrips.filter(t=>t.type==='personal').reduce((a,t)=>a+t.distance,0);
+    const total = work + personal;
+    $('workTotal').innerHTML = work.toFixed(1) + ' <span>mi</span>';
+    $('personalTotal').innerHTML = personal.toFixed(1) + ' <span>mi</span>';
+    const workPct = total > 0 ? Math.round((work/total)*100) : 0;
+    const personalPct = total > 0 ? 100 - workPct : 0;
+    $('segWork').style.width = workPct + '%';
+    $('segPersonal').style.width = personalPct + '%';
+    $('workPct').textContent = workPct + '% work';
+    $('personalPct').textContent = personalPct + '% personal';
+
+    // This week (Mon-Sun) — clocked weekly
+    const day = now.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+    const mondayStr = monday.getFullYear() + '-' + pad(monday.getMonth()+1) + '-' + pad(monday.getDate());
+    const sundayStr = sunday.getFullYear() + '-' + pad(sunday.getMonth()+1) + '-' + pad(sunday.getDate());
+    const weekHours = hoursEntries.filter(h=>h.date >= mondayStr && h.date <= sundayStr).reduce((a,h)=>a+h.hours,0);
+
+    const weekPct = weeklyHours > 0 ? Math.min(100, (weekHours/weeklyHours)*100) : 0;
+    $('weekBarFill').style.width = weekPct + '%';
+    $('weekBarFill').classList.toggle('over', weekHours > weeklyHours);
+    $('weekCaptionLeft').textContent = weekHours.toFixed(1) + ' hrs logged';
+    $('weekCaptionRight').textContent = weeklyHours + ' hrs/week';
+
+    const weekBanner = $('weekOvertimeBanner');
+    if(weekHours > weeklyHours){
+      const ot = weekHours - weeklyHours;
+      weekBanner.className = 'overtime-banner over';
+      weekBanner.textContent = 'Overtime this week: ' + ot.toFixed(1) + ' hrs';
+    }else{
+      const remaining = weeklyHours - weekHours;
+      weekBanner.className = 'overtime-banner under';
+      weekBanner.textContent = remaining <= 0 ? 'Weekly hours met exactly' : remaining.toFixed(1) + ' hrs to go this week';
+    }
+
+    // This month — paid monthly, still tracked against 160
+    const monthHours = hoursEntries.filter(h=>isThisMonth(h.date)).reduce((a,h)=>a+h.hours,0);
+    $('hoursTotal').innerHTML = monthHours.toFixed(1) + ' <span>hrs</span>';
+
+    const pct = contractedHours > 0 ? Math.min(100, (monthHours/contractedHours)*100) : 0;
+    $('hoursBarFill').style.width = pct + '%';
+    $('hoursBarFill').classList.toggle('over', monthHours > contractedHours);
+    $('hoursCaptionLeft').textContent = monthHours.toFixed(1) + ' hrs logged';
+    $('hoursCaptionRight').textContent = contractedHours + ' hrs contracted';
+
+    const banner = $('overtimeBanner');
+    if(monthHours > contractedHours){
+      const ot = monthHours - contractedHours;
+      banner.className = 'overtime-banner over';
+      banner.textContent = 'Overtime this month: ' + ot.toFixed(1) + ' hrs';
+    }else{
+      const remaining = contractedHours - monthHours;
+      banner.className = 'overtime-banner under';
+      banner.textContent = remaining <= 0 ? 'Contracted hours met exactly' : remaining.toFixed(1) + ' hrs to go to reach contracted hours';
+    }
+
+    // Away from home this month
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth()+1, 0);
+    let awayDays = 0;
+    const jobsThisMonth = new Set();
+    for(let d = new Date(monthStart); d <= monthEnd; d.setDate(d.getDate()+1)){
+      const dateStr = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+      const dj = jobsForDate(dateStr);
+      if(dj.length > 0){ awayDays++; dj.forEach(j=>jobsThisMonth.add(j.id)); }
+    }
+    $('awayDaysTotal').innerHTML = awayDays + ' <span>days</span>';
+    $('awayJobsTotal').textContent = jobsThisMonth.size;
+
+    const todayJobs = jobsForDate(todayISO());
+    const jobBanner = $('currentJobBanner');
+    if(todayJobs.length > 0){
+      const j = todayJobs[0];
+      const actual = actualHoursForDate(todayISO());
+      const over = j.expectedHours > 0 && actual > j.expectedHours;
+      jobBanner.className = 'overtime-banner ' + (over ? 'over' : 'under');
+      jobBanner.textContent = 'Currently away: ' + j.title + ' (until ' + j.endDate + ')' + (over ? ' \u2014 over expected hours today' : '');
+      jobBanner.classList.remove('hidden');
+    }else{
+      jobBanner.classList.add('hidden');
+    }
+  }
+
+  // ---------------- Reports / PDF export ----------------
+  function monthKeyOf(dateStr){ return dateStr.slice(0,7); }
+  function monthLabel(key){
+    const [y,m] = key.split('-').map(Number);
+    return new Date(y, m-1, 1).toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+  }
+  function computeAvailableMonths(){
+    const keys = new Set();
+    trips.forEach(t=>keys.add(monthKeyOf(t.date)));
+    hoursEntries.forEach(h=>keys.add(monthKeyOf(h.date)));
+    keys.add(monthKeyOf(todayISO()));
+    return Array.from(keys).sort().reverse();
+  }
+  function renderReportMonthOptions(){
+    const sel = $('reportMonth');
+    const current = sel.value;
+    const months = computeAvailableMonths();
+    sel.innerHTML = months.map(k=>'<option value="'+k+'">'+monthLabel(k)+'</option>').join('');
+    if(months.includes(current)) sel.value = current;
+  }
+
+  function setExportStatus(msg, isError){
+    $('exportStatus').textContent = msg || '';
+    $('exportStatus').style.color = isError ? 'var(--danger)' : 'var(--text-dim)';
+  }
+
+  function getJsPDF(){
+    if(window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+    return null;
+  }
+
+  $('exportTripsBtn').addEventListener('click', ()=>{
+    const JsPDFCtor = getJsPDF();
+    if(!JsPDFCtor){ setExportStatus('PDF library did not load — check your internet connection and try again.', true); return; }
+    const monthKey = $('reportMonth').value;
+    const monthTrips = trips.filter(t=>monthKeyOf(t.date)===monthKey).slice().sort((a,b)=> a.date.localeCompare(b.date));
+    if(monthTrips.length === 0){ setExportStatus('No trips logged for ' + monthLabel(monthKey) + '.', true); return; }
+
+    const workTrips = monthTrips.filter(t=>t.type==='work');
+    const personalTrips = monthTrips.filter(t=>t.type==='personal');
+    const doc = new JsPDFCtor({ unit:'mm', format:'a4' });
+    const purple = [139,92,246];
+    const dim = [110,110,120];
+
+    doc.setFillColor(purple[0],purple[1],purple[2]);
+    doc.rect(0,0,210,22,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(16);
+    doc.text('Vehicle Mileage Log', 14, 14);
+
+    doc.setTextColor(30,30,30);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    let y = 32;
+    doc.text(monthLabel(monthKey), 14, y); y += 6;
+    if(reporterName){ doc.text('Name: ' + reporterName, 14, y); y += 6; }
+    doc.setTextColor(dim[0],dim[1],dim[2]);
+    doc.setFontSize(9);
+    doc.text('Generated ' + new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}), 14, y); y += 8;
+
+    function tripRows(list){
+      return list.map(t=>[
+        new Date(t.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),
+        t.from || '-', t.to || '-', t.purpose || '-', t.distance.toFixed(1) + ' mi'
+      ]);
+    }
+
+    doc.setTextColor(30,30,30);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(12);
+    doc.text('Work trips', 14, y); y += 2;
+    if(workTrips.length){
+      doc.autoTable({
+        startY: y,
+        head: [['Date','From','To','Purpose','Miles']],
+        body: tripRows(workTrips),
+        theme: 'grid',
+        headStyles: { fillColor: purple, textColor: 255, fontSize: 9 },
+        styles: { fontSize: 9, cellPadding: 2.5 },
+        margin: { left: 14, right: 14 }
+      });
+      y = doc.lastAutoTable.finalY + 6;
+    }else{
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('No work trips this month.', 14, y+4); y += 10;
+    }
+    const workTotal = workTrips.reduce((a,t)=>a+t.distance,0);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('Work total: ' + workTotal.toFixed(1) + ' mi', 14, y); y += 10;
+
+    doc.setFontSize(12);
+    doc.text('Personal trips', 14, y); y += 2;
+    if(personalTrips.length){
+      doc.autoTable({
+        startY: y,
+        head: [['Date','From','To','Purpose','Miles']],
+        body: tripRows(personalTrips),
+        theme: 'grid',
+        headStyles: { fillColor: [45,212,191], textColor: 255, fontSize: 9 },
+        styles: { fontSize: 9, cellPadding: 2.5 },
+        margin: { left: 14, right: 14 }
+      });
+      y = doc.lastAutoTable.finalY + 6;
+    }else{
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('No personal trips this month.', 14, y+4); y += 10;
+    }
+    const personalTotal = personalTrips.reduce((a,t)=>a+t.distance,0);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('Personal total: ' + personalTotal.toFixed(1) + ' mi', 14, y); y += 8;
+
+    doc.setDrawColor(200,200,200);
+    doc.line(14, y, 196, y); y += 8;
+    doc.setFontSize(12);
+    doc.text('Grand total: ' + (workTotal+personalTotal).toFixed(1) + ' mi', 14, y);
+
+    doc.save('mileage-log-' + monthKey + '.pdf');
+    setExportStatus('Trip log for ' + monthLabel(monthKey) + ' downloaded ✓');
+  });
+
+  $('exportHoursBtn').addEventListener('click', ()=>{
+    const JsPDFCtor = getJsPDF();
+    if(!JsPDFCtor){ setExportStatus('PDF library did not load — check your internet connection and try again.', true); return; }
+    const monthKey = $('reportMonth').value;
+    const monthHoursList = hoursEntries.filter(h=>monthKeyOf(h.date)===monthKey).slice().sort((a,b)=> a.date.localeCompare(b.date));
+    if(monthHoursList.length === 0){ setExportStatus('No hours logged for ' + monthLabel(monthKey) + '.', true); return; }
+
+    const doc = new JsPDFCtor({ unit:'mm', format:'a4' });
+    const purple = [139,92,246];
+    const dim = [110,110,120];
+
+    doc.setFillColor(purple[0],purple[1],purple[2]);
+    doc.rect(0,0,210,22,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(16);
+    doc.text('Hours Worked Log', 14, 14);
+
+    doc.setTextColor(30,30,30);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    let y = 32;
+    doc.text(monthLabel(monthKey), 14, y); y += 6;
+    if(reporterName){ doc.text('Name: ' + reporterName, 14, y); y += 6; }
+    doc.setTextColor(dim[0],dim[1],dim[2]);
+    doc.setFontSize(9);
+    doc.text('Generated ' + new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}), 14, y); y += 8;
+
+    doc.setTextColor(30,30,30);
+    const rows = monthHoursList.map(h=>{
+      const job = h.jobId ? (jobs.find(j=>j.id===Number(h.jobId)) || jobs.find(j=>j.id===h.jobId)) : null;
+      return [
+        new Date(h.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),
+        h.hours.toFixed(2),
+        job ? job.title : '-',
+        h.notes || '-'
+      ];
+    });
+    doc.autoTable({
+      startY: y,
+      head: [['Date','Hours','Job','Notes']],
+      body: rows,
+      theme: 'grid',
+      headStyles: { fillColor: purple, textColor: 255, fontSize: 9 },
+      styles: { fontSize: 9, cellPadding: 2.5 },
+      margin: { left: 14, right: 14 }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // Weekly breakdown (matches how you're clocked in)
+    const weekMap = {};
+    monthHoursList.forEach(h=>{
+      const d = new Date(h.date+'T00:00:00');
+      const day = d.getDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diffToMonday);
+      const key = monday.getFullYear() + '-' + pad(monday.getMonth()+1) + '-' + pad(monday.getDate());
+      weekMap[key] = (weekMap[key] || 0) + h.hours;
+    });
+    const weekKeys = Object.keys(weekMap).sort();
+    doc.setFont('helvetica','bold'); doc.setFontSize(12);
+    doc.text('Weekly breakdown', 14, y); y += 2;
+    const weekRows = weekKeys.map(k=>{
+      const wk = weekMap[k];
+      const diff = wk - weeklyHours;
+      const label = 'Week of ' + new Date(k+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+      return [label, wk.toFixed(1) + ' hrs', weeklyHours + ' hrs', (diff>0?'+':'') + diff.toFixed(1) + ' hrs'];
+    });
+    doc.autoTable({
+      startY: y,
+      head: [['Week','Logged','Target','Over / Under']],
+      body: weekRows,
+      theme: 'grid',
+      headStyles: { fillColor: [45,212,191], textColor: 255, fontSize: 9 },
+      styles: { fontSize: 9, cellPadding: 2.5 },
+      margin: { left: 14, right: 14 }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    const monthTotal = monthHoursList.reduce((a,h)=>a+h.hours,0);
+    doc.setDrawColor(200,200,200);
+    doc.line(14, y, 196, y); y += 8;
+    doc.setFont('helvetica','bold'); doc.setFontSize(11);
+    doc.text('Month total: ' + monthTotal.toFixed(1) + ' hrs', 14, y); y += 7;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text('Contracted: ' + contractedHours + ' hrs', 14, y); y += 7;
+    const monthDiff = monthTotal - contractedHours;
+    doc.setFont('helvetica','bold');
+    doc.text((monthDiff>=0?'Overtime: +':'Under by: ') + Math.abs(monthDiff).toFixed(1) + ' hrs', 14, y);
+
+    doc.save('hours-log-' + monthKey + '.pdf');
+    setExportStatus('Hours log for ' + monthLabel(monthKey) + ' downloaded ✓');
+  });
+
+  // ---------------- Trends ----------------
+  let trendsChartInstance = null;
+
+  function computeMonthlySeries(){
+    const allDates = trips.map(t=>t.date).concat(hoursEntries.map(h=>h.date));
+    if(allDates.length === 0) return { keys: [], labels: [], work: [], personal: [], hours: [] };
+    const minKey = allDates.map(monthKeyOf).sort()[0];
+    const maxKey = monthKeyOf(todayISO());
+    const keys = [];
+    let [y,m] = minKey.split('-').map(Number);
+    const [maxY,maxM] = maxKey.split('-').map(Number);
+    while(y < maxY || (y === maxY && m <= maxM)){
+      keys.push(y + '-' + pad(m));
+      m++;
+      if(m > 12){ m = 1; y++; }
+    }
+    const shortLabels = keys.map(k=>{
+      const [ky,km] = k.split('-').map(Number);
+      return new Date(ky, km-1, 1).toLocaleDateString('en-GB',{month:'short'}) + " '" + String(ky).slice(2);
+    });
+    const work = keys.map(k=> trips.filter(t=>monthKeyOf(t.date)===k && t.type==='work').reduce((a,t)=>a+t.distance,0));
+    const personal = keys.map(k=> trips.filter(t=>monthKeyOf(t.date)===k && t.type==='personal').reduce((a,t)=>a+t.distance,0));
+    const hours = keys.map(k=> hoursEntries.filter(h=>monthKeyOf(h.date)===k).reduce((a,h)=>a+h.hours,0));
+    return { keys, labels: shortLabels, work, personal, hours };
+  }
+
+  function renderTrends(){
+    const data = computeMonthlySeries();
+    const canvas = $('trendsChart');
+    if(data.keys.length === 0){
+      $('trendsTable').innerHTML = '<div class="empty-state"><strong>No data yet</strong>Log some trips or hours to see trends here.</div>';
+      return;
+    }
+    if(typeof Chart === 'undefined'){
+      $('trendsTable').innerHTML = '<div class="empty-state"><strong>Chart library did not load</strong>Check your internet connection and reopen this page.</div>';
+      return;
+    }
+    if(trendsChartInstance){ trendsChartInstance.destroy(); }
+    const gridColor = 'rgba(148,138,173,0.15)';
+    const textColor = '#948aad';
+    trendsChartInstance = new Chart(canvas.getContext('2d'), {
+      data: {
+        labels: data.labels,
+        datasets: [
+          { type:'bar', label:'Work miles', data: data.work, backgroundColor:'#8b5cf6', stack:'miles', yAxisID:'y', borderRadius:3 },
+          { type:'bar', label:'Personal miles', data: data.personal, backgroundColor:'#2dd4bf', stack:'miles', yAxisID:'y', borderRadius:3 },
+          { type:'line', label:'Hours worked', data: data.hours, borderColor:'#f5a623', backgroundColor:'#f5a623', yAxisID:'y1', tension:0.3, pointRadius:3, pointBackgroundColor:'#f5a623' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode:'index', intersect:false },
+        plugins: {
+          legend: { labels:{ color:textColor, font:{ family:'Inter', size:11 } } }
+        },
+        scales: {
+          x: { stacked:true, ticks:{ color:textColor, font:{ family:'Space Mono', size:10 } }, grid:{ color:gridColor } },
+          y: { stacked:true, position:'left', ticks:{ color:textColor, font:{ size:10 } }, grid:{ color:gridColor }, title:{ display:true, text:'Miles', color:textColor } },
+          y1: { position:'right', ticks:{ color:textColor, font:{ size:10 } }, grid:{ display:false }, title:{ display:true, text:'Hours', color:textColor } }
+        }
+      }
+    });
+
+    $('trendsTable').innerHTML = '<div class="trend-row head"><span>Month</span><span>Work mi</span><span>Personal mi</span><span>Hours</span></div>'
+      + data.keys.map((k,i)=>'<div class="trend-row"><span class="tm">' + data.labels[i] + '</span><span>' + data.work[i].toFixed(1) + '</span><span>' + data.personal[i].toFixed(1) + '</span><span>' + data.hours[i].toFixed(1) + '</span></div>').join('');
+  }
+
+  function renderTripList(){
+    const list = $('tripList');
+    const filtered = filter === 'all' ? trips : trips.filter(t=>t.type===filter);
+    if(filtered.length === 0){
+      list.innerHTML = '<div class="empty-state"><strong>No trips logged yet</strong>Use Log Trip to add your first journey.</div>';
+      return;
+    }
+    list.innerHTML = filtered.slice(0,50).map(t=>{
+      const route = (t.from || t.to) ? [t.from,t.to].filter(Boolean).join(' &rarr; ') : 'Trip';
+      const dateFmt = new Date(t.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+      return '<div class="trip-row">'
+        + '<div class="trip-date">' + dateFmt + '</div>'
+        + '<div class="trip-info"><div class="route">' + route + '</div>'
+        + (t.purpose ? '<div class="purpose">' + escapeHtml(t.purpose) + '</div>' : '') + '</div>'
+        + '<div class="trip-tag ' + t.type + '"><span class="dot ' + t.type + '"></span><span class="tag-label">' + (t.type === 'work' ? 'Work' : 'Personal') + '</span></div>'
+        + '<div class="trip-dist">' + t.distance.toFixed(1) + ' mi</div>'
+        + '<div class="trip-actions"><button class="edit-btn" onclick="window.__editTrip(' + t.id + ')" aria-label="Edit trip">&#9998;</button><button class="del-btn" onclick="window.__deleteTrip(' + t.id + ')" aria-label="Delete trip">&times;</button></div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function renderHoursList(){
+    const list = $('hoursList');
+    if(hoursEntries.length === 0){
+      list.innerHTML = '<div class="empty-state"><strong>No hours logged yet</strong>Log hours for a day above to start tracking overtime.</div>';
+      return;
+    }
+    list.innerHTML = hoursEntries.slice(0,50).map(h=>{
+      const dateFmt = new Date(h.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+      return '<div class="trip-row" style="grid-template-columns:auto 1fr auto;">'
+        + '<div class="trip-date">' + dateFmt + '</div>'
+        + '<div class="trip-info"><div class="route">' + h.hours.toFixed(2) + ' hrs</div>'
+        + (h.notes ? '<div class="purpose">' + escapeHtml(h.notes) + '</div>' : '') + '</div>'
+        + '<div class="trip-actions"><button class="edit-btn" onclick="window.__editHours(' + h.id + ')" aria-label="Edit entry">&#9998;</button><button class="del-btn" onclick="window.__deleteHours(' + h.id + ')" aria-label="Delete entry">&times;</button></div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ---------------- Calendar ----------------
+  const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  $('calDow').innerHTML = DOW.map(d=>'<div class="cal-dow">'+d+'</div>').join('');
+
+  let calViewMode = 'month';
+  document.querySelectorAll('.cal-view-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.cal-view-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      calViewMode = tab.dataset.calview;
+      $('calMonthView').classList.toggle('hidden', calViewMode !== 'month');
+      $('calYearView').classList.toggle('hidden', calViewMode !== 'year');
+      if(calViewMode === 'year') renderYearView(); else renderCalendar();
+    });
+  });
+
+  $('calPrev').addEventListener('click', ()=>{ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
+  $('calNext').addEventListener('click', ()=>{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
+  $('yearPrev').addEventListener('click', ()=>{ calYear--; renderYearView(); });
+  $('yearNext').addEventListener('click', ()=>{ calYear++; renderYearView(); });
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function renderCalendarView(){
+    if(calViewMode === 'year') renderYearView(); else renderCalendar();
+  }
+
+  function renderYearView(){
+    $('calYearLabel').textContent = String(calYear);
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const stats = [];
+    let maxMiles = 0;
+    for(let m=0; m<12; m++){
+      const key = calYear + '-' + pad(m+1);
+      const mTrips = trips.filter(t=>monthKeyOf(t.date)===key);
+      const work = mTrips.filter(t=>t.type==='work').reduce((a,t)=>a+t.distance,0);
+      const personal = mTrips.filter(t=>t.type==='personal').reduce((a,t)=>a+t.distance,0);
+      const hrs = hoursEntries.filter(h=>monthKeyOf(h.date)===key).reduce((a,h)=>a+h.hours,0);
+      stats.push({ m, work, personal, hrs, total: work+personal });
+      if(work+personal > maxMiles) maxMiles = work+personal;
+    }
+    const nowKey = todayISO().slice(0,7);
+    const grid = $('yearGrid');
+    grid.innerHTML = '<div class="year-grid">' + stats.map(s=>{
+      const key = calYear + '-' + pad(s.m+1);
+      const workPct = maxMiles > 0 ? (s.work / maxMiles) * 100 : 0;
+      const personalPct = maxMiles > 0 ? (s.personal / maxMiles) * 100 : 0;
+      return '<div class="month-card' + (key===nowKey?' current':'') + '" data-month="' + s.m + '">'
+        + '<div class="month-card-name">' + monthNames[s.m] + '</div>'
+        + '<div class="month-bar-track"><div class="seg-work" style="width:' + workPct + '%"></div><div class="seg-personal" style="width:' + personalPct + '%"></div></div>'
+        + '<div class="month-card-stats">'
+        + '<strong>' + s.total.toFixed(0) + '</strong> mi total<br>'
+        + '<strong>' + s.hrs.toFixed(1) + '</strong> hrs worked'
+        + '</div></div>';
+    }).join('') + '</div>';
+
+    grid.querySelectorAll('.month-card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        calMonth = Number(card.dataset.month);
+        document.querySelectorAll('.cal-view-tab').forEach(t=>t.classList.toggle('active', t.dataset.calview==='month'));
+        calViewMode = 'month';
+        $('calMonthView').classList.remove('hidden');
+        $('calYearView').classList.add('hidden');
+        renderCalendar();
+      });
+    });
+  }
+
+  function renderCalendar(){
+    const label = new Date(calYear, calMonth, 1).toLocaleDateString('en-GB',{month:'long', year:'numeric'});
+    $('calMonthLabel').textContent = label;
+
+    const firstDay = new Date(calYear, calMonth, 1);
+    let startOffset = firstDay.getDay() - 1; // Monday = 0
+    if(startOffset < 0) startOffset = 6;
+    const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+    const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+    const grid = $('calGrid');
+    let html = '';
+    for(let i=0;i<totalCells;i++){
+      const dayNum = i - startOffset + 1;
+      if(dayNum < 1 || dayNum > daysInMonth){
+        html += '<div class="cal-cell empty"></div>';
+        continue;
+      }
+      const dateStr = calYear + '-' + pad(calMonth+1) + '-' + pad(dayNum);
+      const isToday = dateStr === todayISO();
+      const dayTrips = trips.filter(t=>t.date === dateStr);
+      const dayHours = hoursEntries.filter(h=>h.date === dateStr).reduce((a,h)=>a+h.hours,0);
+      const hasWork = dayTrips.some(t=>t.type==='work');
+      const hasPersonal = dayTrips.some(t=>t.type==='personal');
+      let dots = '';
+      if(hasWork) dots += '<span class="dot work"></span>';
+      if(hasPersonal) dots += '<span class="dot personal"></span>';
+      const hoursBadge = dayHours > 0 ? '<span class="cal-hours-badge">' + dayHours.toFixed(1) + 'h</span>' : '';
+      const isAway = jobsForDate(dateStr).length > 0;
+      const isOver = dayOverExpected(dateStr);
+      let cellClass = 'cal-cell';
+      if(isToday) cellClass += ' today';
+      if(isAway) cellClass += ' away';
+      if(isOver) cellClass += ' over-expected';
+      html += '<div class="' + cellClass + '" data-date="' + dateStr + '">'
+        + '<div class="cal-daynum">' + dayNum + '</div>'
+        + '<div class="cal-dots">' + dots + hoursBadge + '</div>'
+        + '</div>';
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll('.cal-cell:not(.empty)').forEach(cell=>{
+      cell.addEventListener('click', ()=> openDayModal(cell.dataset.date));
+    });
+  }
+
+  // ---------------- Day modal ----------------
+  let modalDate = null;
+  function openDayModal(dateStr){
+    modalDate = dateStr;
+    const d = new Date(dateStr+'T00:00:00');
+    $('dayModalTitle').textContent = d.toLocaleDateString('en-GB',{weekday:'long', day:'numeric', month:'long'});
+
+    const dayTrips = trips.filter(t=>t.date===dateStr);
+    const dayHours = hoursEntries.filter(h=>h.date===dateStr);
+    const dayJobs = jobsForDate(dateStr);
+    let html = '';
+
+    if(dayJobs.length > 0){
+      const j = dayJobs[0];
+      const actual = actualHoursForDate(dateStr);
+      const over = j.expectedHours > 0 && actual > j.expectedHours;
+      html += '<div class="overtime-banner ' + (over ? 'over' : 'under') + '" style="margin-bottom:14px;margin-top:0;">'
+        + escapeHtml(j.title) + (j.location ? ' &middot; ' + escapeHtml(j.location) : '')
+        + (j.expectedHours > 0 ? ' &mdash; expected ' + j.expectedHours.toFixed(1) + ' hrs, logged ' + actual.toFixed(1) + ' hrs'
+          + (over ? ' (over)' : '') : '')
+        + '</div>';
+    }
+
+    if(dayTrips.length === 0 && dayHours.length === 0 && dayJobs.length === 0){
+      html = '<div class="empty-state"><strong>Nothing logged</strong>Add a trip or hours for this day below.</div>';
+    }
+    dayTrips.forEach(t=>{
+      const route = (t.from || t.to) ? [t.from,t.to].filter(Boolean).join(' \u2192 ') : 'Trip';
+      html += '<div class="day-entry"><div class="de-main"><strong>' + route + '</strong><div>' + t.distance.toFixed(1) + ' mi &middot; ' + (t.type==='work'?'Work':'Personal') + '</div></div>'
+        + '<div style="display:flex;gap:2px;"><button class="edit-btn" onclick="window.__editTripFromModal(' + t.id + ')" aria-label="Edit">&#9998;</button>'
+        + '<button class="del-btn" onclick="window.__deleteTrip(' + t.id + ');window.__reopenModal()" aria-label="Delete">&times;</button></div></div>';
+    });
+    dayHours.forEach(h=>{
+      html += '<div class="day-entry"><div class="de-main"><strong>' + h.hours.toFixed(2) + ' hrs</strong>' + (h.notes ? '<div>' + escapeHtml(h.notes) + '</div>' : '') + '</div>'
+        + '<div style="display:flex;gap:2px;"><button class="edit-btn" onclick="window.__editHoursFromModal(' + h.id + ')" aria-label="Edit">&#9998;</button>'
+        + '<button class="del-btn" onclick="window.__deleteHours(' + h.id + ');window.__reopenModal()" aria-label="Delete">&times;</button></div></div>';
+    });
+    $('dayModalEntries').innerHTML = html;
+    $('dayModalOverlay').classList.add('open');
+  }
+  window.__reopenModal = ()=>{ if(modalDate) setTimeout(()=>openDayModal(modalDate), 50); };
+
+  $('dayModalClose').addEventListener('click', ()=> $('dayModalOverlay').classList.remove('open'));
+  $('dayModalOverlay').addEventListener('click', (e)=>{ if(e.target === $('dayModalOverlay')) $('dayModalOverlay').classList.remove('open'); });
+
+  $('dayAddTrip').addEventListener('click', ()=>{
+    $('dayModalOverlay').classList.remove('open');
+    $('tripDate').value = modalDate;
+    switchView('trip');
+  });
+  $('dayAddHours').addEventListener('click', ()=>{
+    $('dayModalOverlay').classList.remove('open');
+    $('hoursDate').value = modalDate;
+    const matches = jobsForDate(modalDate);
+    if(matches.length > 0) $('hoursJob').value = matches[0].id;
+    switchView('hours');
+  });
+
+  // ---------------- Add to Home Screen ----------------
+  let deferredInstallPrompt = null;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  function setInstallStatus(msg){
+    $('installStatus').textContent = msg || '';
+  }
+
+  if(isStandalone){
+    $('installCard').classList.add('hidden');
+  }
+
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+  });
+
+  $('installBtn').addEventListener('click', async ()=>{
+    if(isStandalone){
+      setInstallStatus('This is already added to your home screen.');
+      return;
+    }
+    if(deferredInstallPrompt){
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      setInstallStatus(choice.outcome === 'accepted' ? 'Added to your home screen ✓' : '');
+    }else if(isIOS){
+      setInstallStatus('iOS doesn\u2019t allow one-tap install \u2014 tap the Share icon in Safari, then "Add to Home Screen".');
+    }else{
+      setInstallStatus('Your browser doesn\u2019t support one-tap install \u2014 check its menu for "Add to Home Screen" or "Install app".');
+    }
+  });
+
+  updateGauge();
+  loadProfiles();
+  loadAll();
+})();
+</script>
+</body>
+</html>
