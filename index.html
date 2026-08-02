@@ -329,7 +329,9 @@
   .month-card-stats strong{color:var(--text); font-family:'Space Mono',monospace; font-weight:700;}
 
   /* Trends */
-  .chart-wrap{position:relative; height:280px; margin-top:6px;}
+  .chart-wrap{position:relative; width:100%; height:260px; margin-top:6px;}
+  .chart-wrap canvas{width:100% !important; height:100% !important; display:block;}
+  @media(max-width:480px){.chart-wrap{height:220px;}}
   .trend-row{
     display:grid; grid-template-columns:auto 1fr 1fr 1fr; align-items:center; gap:12px;
     padding:11px 4px; border-bottom:1px solid var(--border); font-size:12.5px;
@@ -350,6 +352,22 @@
   .job-status{font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap;}
   .job-status.over{background:rgba(245,166,35,0.15); color:#f5c877;}
   .job-status.under{background:rgba(139,92,246,0.12); color:#c4b5fd;}
+  .job-status.completed{background:rgba(45,212,191,0.15); color:#7fe9dc;}
+  .job-status.open{background:rgba(148,138,173,0.15); color:var(--text-muted);}
+  .job-card.is-completed{opacity:0.6;}
+
+  /* Job hours batch entry */
+  .job-hours-row{
+    display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:8px;
+    padding:9px 0; border-bottom:1px solid var(--border);
+  }
+  .job-hours-row:last-child{border-bottom:none;}
+  .job-hours-row.head{
+    color:var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:0.4px; font-weight:600;
+    border-bottom:none; padding-bottom:6px;
+  }
+  .job-hours-row span{font-size:13px;}
+  .job-hours-row input{width:60px; padding:8px; text-align:center;}
 
   /* Day modal */
   .modal-overlay{
@@ -772,29 +790,46 @@
     <div class="card">
       <div class="card-head">Log hours worked</div>
       <div class="field">
-        <label for="hoursDate">Date</label>
-        <input type="date" id="hoursDate">
+        <label for="hoursJobPicker">Job</label>
+        <select id="hoursJobPicker"><option value="">No job / general hours</option></select>
       </div>
-      <div class="row-2">
+
+      <div id="generalHoursForm">
         <div class="field">
-          <label for="hoursWorkedH">Hours</label>
-          <input type="number" id="hoursWorkedH" placeholder="e.g. 10" min="0" step="1">
+          <label for="hoursDate">Date</label>
+          <input type="date" id="hoursDate">
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="hoursWorkedH">Hours</label>
+            <input type="number" id="hoursWorkedH" placeholder="e.g. 10" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="hoursWorkedM">Minutes</label>
+            <input type="number" id="hoursWorkedM" placeholder="e.g. 30" min="0" max="59" step="5">
+          </div>
         </div>
         <div class="field">
-          <label for="hoursWorkedM">Minutes</label>
-          <input type="number" id="hoursWorkedM" placeholder="e.g. 30" min="0" max="59" step="5">
+          <label for="hoursNotes">Notes</label>
+          <textarea id="hoursNotes" placeholder="e.g. Event build &amp; teardown"></textarea>
         </div>
+        <button class="btn-primary teal" id="addHoursBtn">Log hours</button>
+        <button class="btn-secondary hidden" id="cancelHoursEditBtn" style="width:100%;margin-top:10px;">Cancel edit</button>
       </div>
-      <div class="field">
-        <label for="hoursJob">Job (optional)</label>
-        <select id="hoursJob"><option value="">No job / general hours</option></select>
+
+      <div id="jobHoursForm" class="hidden">
+        <div class="overtime-banner under" id="jobHoursBanner"></div>
+        <div class="hint">Enter the hours worked for each day of this job, then log them all at once. This will mark the job as complete so it drops off this list.</div>
+        <div class="job-hours-row head">
+          <span>Date</span><span>Hours</span><span>Mins</span>
+        </div>
+        <div id="jobHoursDayList"></div>
+        <div class="field" style="margin-top:14px;">
+          <label for="jobHoursNotes">Description</label>
+          <textarea id="jobHoursNotes" placeholder="e.g. Event build, show days &amp; teardown"></textarea>
+        </div>
+        <button class="btn-primary teal" id="logJobHoursBtn">Log hours &amp; close job</button>
       </div>
-      <div class="field">
-        <label for="hoursNotes">Notes</label>
-        <textarea id="hoursNotes" placeholder="e.g. Event build &amp; teardown"></textarea>
-      </div>
-      <button class="btn-primary teal" id="addHoursBtn">Log hours</button>
-      <button class="btn-secondary hidden" id="cancelHoursEditBtn" style="width:100%;margin-top:10px;">Cancel edit</button>
     </div>
 
     <div class="card">
@@ -1016,15 +1051,94 @@
     const e = new Date(job.endDate+'T00:00:00');
     return Math.round((e - s) / 86400000) + 1;
   }
+  function openJobsForDate(dateStr){
+    return jobsForDate(dateStr).filter(j=>!j.completed);
+  }
+  let currentJobHoursId = null;
   function refreshHoursJobSelect(){
-    const sel = $('hoursJob');
+    const sel = $('hoursJobPicker');
     const current = sel.value;
-    const sorted = jobs.slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
-    sel.innerHTML = '<option value="">No job / general hours</option>' + sorted.map(j=>
+    const open = jobs.filter(j=>!j.completed).slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    sel.innerHTML = '<option value="">No job / general hours</option>' + open.map(j=>
       '<option value="' + j.id + '">' + escapeHtml(j.title) + ' (' + j.startDate + ' to ' + j.endDate + ')</option>'
     ).join('');
-    if(sorted.some(j=>String(j.id)===current)) sel.value = current;
+    if(open.some(j=>String(j.id)===current)){
+      sel.value = current;
+    }else if(current){
+      // the job that was selected is no longer open (completed/deleted elsewhere) — fall back
+      sel.value = '';
+      showGeneralHoursForm();
+    }
   }
+
+  function showGeneralHoursForm(){
+    currentJobHoursId = null;
+    pendingHoursJobId = null;
+    $('generalHoursForm').classList.remove('hidden');
+    $('jobHoursForm').classList.add('hidden');
+  }
+
+  function renderJobHoursForm(jobId){
+    const job = jobs.find(j=>String(j.id)===String(jobId));
+    if(!job) return;
+    currentJobHoursId = job.id;
+    const dateList = [];
+    let d = new Date(job.startDate+'T00:00:00');
+    const end = new Date(job.endDate+'T00:00:00');
+    while(d <= end){
+      dateList.push(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()));
+      d.setDate(d.getDate()+1);
+    }
+    $('jobHoursBanner').textContent = job.title + (job.location ? ' \u00b7 ' + job.location : '') + ' \u2014 ' + job.startDate + ' to ' + job.endDate + (job.expectedHours ? ' \u00b7 expected ' + fmtHrs(job.expectedHours) + ' hrs/day' : '');
+    $('jobHoursDayList').innerHTML = dateList.map(dateStr=>{
+      const existing = hoursEntries.find(h=>h.date===dateStr && h.jobId===job.id);
+      const prefill = existing ? existing.hours : (job.expectedHours || 0);
+      const hm = decimalToHM(prefill);
+      const dateFmt = new Date(dateStr+'T00:00:00').toLocaleDateString('en-GB',{weekday:'short', day:'2-digit', month:'short'});
+      return '<div class="job-hours-row" data-date="' + dateStr + '">'
+        + '<span>' + dateFmt + '</span>'
+        + '<input type="number" class="jhd-h" min="0" step="1" value="' + (hm.h || '') + '">'
+        + '<input type="number" class="jhd-m" min="0" max="59" step="5" value="' + (hm.m || '') + '">'
+        + '</div>';
+    }).join('');
+    $('jobHoursNotes').value = job.notes || '';
+    $('generalHoursForm').classList.add('hidden');
+    $('jobHoursForm').classList.remove('hidden');
+  }
+
+  $('hoursJobPicker').addEventListener('change', ()=>{
+    const jobId = $('hoursJobPicker').value;
+    if(!jobId){ showGeneralHoursForm(); }
+    else{ renderJobHoursForm(jobId); }
+  });
+
+  $('logJobHoursBtn').addEventListener('click', async ()=>{
+    const job = jobs.find(j=>j.id === currentJobHoursId);
+    if(!job) return;
+    const notes = $('jobHoursNotes').value.trim();
+    const rows = document.querySelectorAll('#jobHoursDayList .job-hours-row');
+    let i = 0;
+    rows.forEach(row=>{
+      const dateStr = row.dataset.date;
+      const decHours = hmToDecimal(row.querySelector('.jhd-h').value, row.querySelector('.jhd-m').value);
+      const existingIdx = hoursEntries.findIndex(h=>h.date===dateStr && h.jobId===job.id);
+      if(decHours > 0){
+        if(existingIdx > -1){
+          hoursEntries[existingIdx] = Object.assign({}, hoursEntries[existingIdx], { hours: decHours, notes: notes });
+        }else{
+          hoursEntries.unshift({ id: Date.now() + (i++), date: dateStr, hours: decHours, jobId: job.id, notes: notes });
+        }
+      }else if(existingIdx > -1){
+        hoursEntries.splice(existingIdx, 1);
+      }
+    });
+    await saveHours();
+    job.completed = true;
+    await saveJobs();
+    $('hoursJobPicker').value = '';
+    showGeneralHoursForm();
+    renderAll();
+  });
 
   // ---------------- Nav ----------------
   document.querySelectorAll('.nav-item').forEach(item=>{
@@ -1460,10 +1574,7 @@
   });
 
   // ---------------- Log hours ----------------
-  $('hoursDate').addEventListener('change', ()=>{
-    const matches = jobsForDate($('hoursDate').value);
-    if(matches.length > 0) $('hoursJob').value = matches[0].id;
-  });
+  let pendingHoursJobId = null;
 
   function setHoursFormEditingUI(isEditing){
     $('addHoursBtn').textContent = isEditing ? 'Update hours' : 'Log hours';
@@ -1475,13 +1586,14 @@
     if(!h) return;
     editingHoursId = id;
     switchView('hours');
+    $('hoursJobPicker').value = '';
+    showGeneralHoursForm();
+    pendingHoursJobId = h.jobId || null;
     $('hoursDate').value = h.date;
     const hm = decimalToHM(h.hours);
     $('hoursWorkedH').value = hm.h;
     $('hoursWorkedM').value = hm.m;
     $('hoursNotes').value = h.notes || '';
-    refreshHoursJobSelect();
-    $('hoursJob').value = h.jobId || '';
     setHoursFormEditingUI(true);
   }
   window.__editHours = editHours;
@@ -1489,21 +1601,20 @@
 
   $('cancelHoursEditBtn').addEventListener('click', ()=>{
     editingHoursId = null;
+    pendingHoursJobId = null;
     $('hoursWorkedH').value = '';
     $('hoursWorkedM').value = '';
     $('hoursNotes').value = '';
-    $('hoursJob').value = '';
     setHoursFormEditingUI(false);
   });
 
   $('addHoursBtn').addEventListener('click', async ()=>{
     const h = hmToDecimal($('hoursWorkedH').value, $('hoursWorkedM').value);
     if(isNaN(h) || h <= 0) return;
-    const jobId = $('hoursJob').value || null;
     const data = {
       date: $('hoursDate').value || todayISO(),
       hours: h,
-      jobId: jobId,
+      jobId: pendingHoursJobId,
       notes: $('hoursNotes').value.trim()
     };
     if(editingHoursId){
@@ -1514,6 +1625,7 @@
     }else{
       hoursEntries.unshift(Object.assign({ id: Date.now() }, data));
     }
+    pendingHoursJobId = null;
     await saveHours();
     $('hoursWorkedH').value = '';
     $('hoursWorkedM').value = '';
@@ -1575,11 +1687,11 @@
     };
     if(editingJobId){
       const idx = jobs.findIndex(j=>j.id === editingJobId);
-      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId }, data);
+      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId, completed: jobs[idx].completed || false }, data);
       editingJobId = null;
       setJobFormEditingUI(false);
     }else{
-      jobs.unshift(Object.assign({ id: Date.now() }, data));
+      jobs.unshift(Object.assign({ id: Date.now(), completed: false }, data));
     }
     await saveJobs();
     resetJobForm();
@@ -1598,6 +1710,16 @@
   }
   window.__deleteJob = deleteJob;
 
+  async function toggleJobComplete(id){
+    const job = jobs.find(j=>j.id===id);
+    if(!job) return;
+    job.completed = !job.completed;
+    await saveJobs();
+    renderJobsList();
+    refreshHoursJobSelect();
+  }
+  window.__toggleJobComplete = toggleJobComplete;
+
   function renderJobsList(){
     const list = $('jobsList');
     if(jobs.length === 0){
@@ -1611,15 +1733,16 @@
       const actualTotal = hoursEntries.filter(h => h.date >= j.startDate && h.date <= j.endDate).reduce((a,h)=>a+h.hours,0);
       const diff = actualTotal - expectedTotal;
       const isOver = expectedTotal > 0 && diff > 0;
-      const statusHtml = expectedTotal > 0
+      const progressStatus = expectedTotal > 0
         ? '<span class="job-status ' + (isOver ? 'over' : 'under') + '">' + (isOver ? '+' + fmtHrs(diff) + ' hrs over' : (diff===0 ? 'On target' : fmtHrs(diff) + ' hrs under')) + '</span>'
         : '';
-      return '<div class="job-card">'
+      const completeStatus = '<span class="job-status ' + (j.completed ? 'completed' : 'open') + '">' + (j.completed ? 'Completed' : 'Needs hours') + '</span>';
+      return '<div class="job-card' + (j.completed ? ' is-completed' : '') + '">'
         + '<div class="job-card-head"><div>'
         + '<div class="job-card-title">' + escapeHtml(j.title) + '</div>'
         + '<div class="job-card-meta">' + (j.location ? escapeHtml(j.location) + ' &middot; ' : '') + j.startDate + ' to ' + j.endDate + ' (' + days + (days===1?' day':' days') + ' away)</div>'
         + '</div>'
-        + '<div style="display:flex;align-items:center;gap:2px;">' + statusHtml
+        + '<div style="display:flex;align-items:center;gap:2px;">' + completeStatus + progressStatus
         + '<button class="edit-btn" onclick="window.__editJob(' + j.id + ')" aria-label="Edit job">&#9998;</button>'
         + '<button class="del-btn" onclick="window.__deleteJob(' + j.id + ')" aria-label="Delete job">&times;</button></div>'
         + '</div>'
@@ -1627,6 +1750,7 @@
         + '<span>Expected: <strong>' + fmtHrs(j.expectedHours || 0) + ' hrs/day</strong></span>'
         + '<span>Logged: <strong>' + fmtHrs(actualTotal) + ' hrs</strong></span>'
         + '</div>'
+        + '<button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="window.__toggleJobComplete(' + j.id + ')">' + (j.completed ? 'Reopen job' : 'Mark complete') + '</button>'
         + '</div>';
     }).join('');
   }
@@ -2075,35 +2199,49 @@
       $('trendsTable').innerHTML = '<div class="empty-state"><strong>Chart library did not load</strong>Check your internet connection and reopen this page.</div>';
       return;
     }
-    if(trendsChartInstance){ trendsChartInstance.destroy(); }
-    const gridColor = 'rgba(148,138,173,0.15)';
-    const textColor = '#948aad';
-    trendsChartInstance = new Chart(canvas.getContext('2d'), {
-      data: {
-        labels: data.labels,
-        datasets: [
-          { type:'bar', label:'Work miles', data: data.work, backgroundColor:'#8b5cf6', stack:'miles', yAxisID:'y', borderRadius:3 },
-          { type:'bar', label:'Personal miles', data: data.personal, backgroundColor:'#2dd4bf', stack:'miles', yAxisID:'y', borderRadius:3 },
-          { type:'line', label:'Hours worked', data: data.hours, borderColor:'#f5a623', backgroundColor:'#f5a623', yAxisID:'y1', tension:0.3, pointRadius:3, pointBackgroundColor:'#f5a623' }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode:'index', intersect:false },
-        plugins: {
-          legend: { labels:{ color:textColor, font:{ family:'Inter', size:11 } } }
-        },
-        scales: {
-          x: { stacked:true, ticks:{ color:textColor, font:{ family:'Space Mono', size:10 } }, grid:{ color:gridColor } },
-          y: { stacked:true, position:'left', ticks:{ color:textColor, font:{ size:10 } }, grid:{ color:gridColor }, title:{ display:true, text:'Miles', color:textColor } },
-          y1: { position:'right', ticks:{ color:textColor, font:{ size:10 } }, grid:{ display:false }, title:{ display:true, text:'Hours', color:textColor } }
-        }
-      }
-    });
 
     $('trendsTable').innerHTML = '<div class="trend-row head"><span>Month</span><span>Work mi</span><span>Personal mi</span><span>Hours</span></div>'
       + data.keys.map((k,i)=>'<div class="trend-row"><span class="tm">' + data.labels[i] + '</span><span>' + data.work[i].toFixed(1) + '</span><span>' + data.personal[i].toFixed(1) + '</span><span>' + fmtHrs(data.hours[i]) + '</span></div>').join('');
+
+    // Building the chart immediately after this view becomes visible can measure a
+    // zero-size canvas on some mobile browsers. Deferring a frame lets layout settle first.
+    requestAnimationFrame(()=>{
+      try{
+        if(trendsChartInstance){ trendsChartInstance.destroy(); trendsChartInstance = null; }
+        const gridColor = 'rgba(148,138,173,0.15)';
+        const textColor = '#948aad';
+        const hasMiles = data.work.some(v=>v>0) || data.personal.some(v=>v>0);
+        trendsChartInstance = new Chart(canvas.getContext('2d'), {
+          data: {
+            labels: data.labels,
+            datasets: [
+              { type:'bar', label:'Work miles', data: data.work, backgroundColor:'#8b5cf6', stack:'miles', yAxisID:'y', borderRadius:3 },
+              { type:'bar', label:'Personal miles', data: data.personal, backgroundColor:'#2dd4bf', stack:'miles', yAxisID:'y', borderRadius:3 },
+              { type:'line', label:'Hours worked', data: data.hours, borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,0.18)', yAxisID:'y1', tension:0.3, borderWidth:3, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#f5a623', fill: !hasMiles }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            resizeDelay: 50,
+            interaction: { mode:'index', intersect:false },
+            plugins: {
+              legend: { labels:{ color:textColor, font:{ family:'Inter', size:11 }, boxWidth:12, padding:14 } }
+            },
+            scales: {
+              x: { stacked:true, ticks:{ color:textColor, font:{ family:'Space Mono', size:10 } }, grid:{ color:gridColor } },
+              y: { stacked:true, position:'left', beginAtZero:true, ticks:{ color:textColor, font:{ size:10 } }, grid:{ color:gridColor }, title:{ display:true, text:'Miles', color:textColor } },
+              y1: { position:'right', beginAtZero:true, ticks:{ color:textColor, font:{ size:10 } }, grid:{ display:false }, title:{ display:true, text:'Hours', color:textColor } }
+            }
+          }
+        });
+        // Safety net: force a resize pass once the canvas has definitely settled.
+        setTimeout(()=>{ if(trendsChartInstance) trendsChartInstance.resize(); }, 150);
+      }catch(err){
+        console.error('Trends chart failed to render', err);
+        $('trendsTable').insertAdjacentHTML('beforebegin', '<div class="empty-state" style="padding:16px 10px;"><strong>Chart couldn\u2019t render on this device</strong>The table below still has your exact numbers.</div>');
+      }
+    });
   }
 
   function renderTripList(){
@@ -2337,9 +2475,11 @@
   });
   $('dayAddHours').addEventListener('click', ()=>{
     $('dayModalOverlay').classList.remove('open');
+    $('hoursJobPicker').value = '';
+    showGeneralHoursForm();
     $('hoursDate').value = modalDate;
-    const matches = jobsForDate(modalDate);
-    if(matches.length > 0) $('hoursJob').value = matches[0].id;
+    const matches = openJobsForDate(modalDate);
+    pendingHoursJobId = matches.length > 0 ? matches[0].id : null;
     switchView('hours');
   });
 
