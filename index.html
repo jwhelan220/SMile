@@ -161,6 +161,14 @@
   .route-info-row span{color:var(--text-muted);}
   .route-info-row strong{font-family:'Space Mono',monospace; color:var(--text);}
 
+  /* Trip stops */
+  .stop-row{position:relative; margin-bottom:14px;}
+  .stop-row .remove-stop-btn{
+    position:absolute; top:0; right:0; background:none; border:none; color:var(--text-dim);
+    font-size:11px; cursor:pointer; padding:2px 0; text-decoration:underline;
+  }
+  .stop-row .remove-stop-btn:hover{color:var(--danger);}
+
   .btn-secondary{
     background:var(--bg); border:1px solid var(--border); color:var(--text);
     padding:10px 16px; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer;
@@ -309,20 +317,20 @@
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
   .cal-dow{text-align:center;font-size:10.5px;color:var(--text-dim);font-weight:600;letter-spacing:0.4px;padding-bottom:6px;}
   .cal-cell{
-    aspect-ratio:1;border-radius:9px;border:1px solid var(--border);background:var(--bg);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    aspect-ratio:1;min-height:40px;border-radius:9px;border:1px solid var(--border);background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     cursor:pointer;position:relative;transition:border-color .15s ease, background .15s ease;
-    padding:4px;
+    padding:3px;overflow:hidden;
   }
   .cal-cell:hover{border-color:var(--purple);}
   .cal-cell.empty{visibility:hidden;cursor:default;}
   .cal-cell.today{border-color:var(--purple); box-shadow:0 0 0 1px var(--purple);}
   .cal-cell.away{background:rgba(139,92,246,0.09); border-color:rgba(139,92,246,0.3);}
-  .cal-cell.over-expected{border-color:var(--amber); box-shadow:0 0 0 1px var(--amber), 0 0 10px var(--amber-glow);}
-  .cal-daynum{font-size:12.5px;font-weight:600;font-family:'Space Grotesk',sans-serif;}
-  .cal-dots{display:flex;gap:3px;align-items:center;flex-wrap:wrap;justify-content:center;}
-  .cal-hours-badge{font-size:9px;font-family:'Space Mono',monospace;color:var(--amber);}
-  .cal-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:11px;color:var(--text-dim);}
+  .cal-cell.over-expected{border-color:var(--amber); box-shadow:0 0 0 1px var(--amber), 0 0 6px var(--amber-glow);}
+  .cal-daynum{font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;line-height:1;}
+  .cal-dots{display:flex;gap:2px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:100%;}
+  .cal-hours-badge{font-size:8.5px;font-family:'Space Mono',monospace;color:var(--amber);white-space:nowrap;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:12px 14px;margin-top:18px;font-size:11px;color:var(--text-dim);}
   .cal-legend span{display:flex;align-items:center;gap:5px;}
   .cal-legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;}
   .cal-legend .sw.away{background:rgba(139,92,246,0.25);border:1px solid rgba(139,92,246,0.5);}
@@ -741,6 +749,9 @@
 
       <div id="addressInput" class="hidden">
         <div class="hint">Type at least 3 letters of an address to get suggestions, pick one for From and To, then calculate. Uses OpenStreetMap &mdash; it's a route estimate, so use odometer readings for exact mileage claims.</div>
+        <div class="hint" style="margin-top:-8px;">Got a stop along the way &mdash; e.g. depot &rarr; site &rarr; depot? Add it below to log it as one trip instead of two.</div>
+        <div id="stopsContainer"></div>
+        <button class="btn-secondary" id="addStopBtn" type="button" style="width:100%;margin-bottom:14px;">+ Add stop</button>
         <div class="field">
           <label for="arrivalTime">Need to arrive on site by (optional)</label>
           <input type="time" id="arrivalTime">
@@ -1262,6 +1273,54 @@
   setupAutocomplete('fromLoc', 'fromSuggestions', c=>{ fromCoord = c; });
   setupAutocomplete('toLoc', 'toSuggestions', c=>{ toCoord = c; });
 
+  // ---------------- Trip stops ----------------
+  let stops = [];
+  let stopCounter = 0;
+
+  function resetStopChangeState(){
+    if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
+  }
+
+  function addStopRow(prefillText){
+    const idx = stopCounter++;
+    const inputId = 'stopLoc' + idx;
+    const boxId = 'stopSuggestions' + idx;
+    const stopObj = { id: idx, coord: null };
+    stops.push(stopObj);
+
+    const row = document.createElement('div');
+    row.className = 'field autocomplete-field stop-row';
+    row.dataset.stopId = idx;
+    row.innerHTML = '<button type="button" class="remove-stop-btn">Remove</button>'
+      + '<label for="' + inputId + '">Via stop</label>'
+      + '<div class="ac-wrap">'
+      + '<input type="text" id="' + inputId + '" autocomplete="off" placeholder="e.g. Client site">'
+      + '<div class="ac-suggestions" id="' + boxId + '"></div>'
+      + '</div>';
+    $('stopsContainer').appendChild(row);
+    if(prefillText) $(inputId).value = prefillText;
+
+    setupAutocomplete(inputId, boxId, c=>{ stopObj.coord = c; });
+    $(inputId).addEventListener('input', ()=>{ stopObj.coord = null; resetStopChangeState(); });
+    row.querySelector('.remove-stop-btn').addEventListener('click', ()=>{
+      stops = stops.filter(s=>s.id !== idx);
+      row.remove();
+      resetStopChangeState();
+    });
+    return stopObj;
+  }
+
+  function clearStops(){
+    stops = [];
+    $('stopsContainer').innerHTML = '';
+  }
+
+  function getStopTexts(){
+    return stops.map(s=> ($('stopLoc' + s.id) ? $('stopLoc' + s.id).value.trim() : '')).filter(Boolean);
+  }
+
+  $('addStopBtn').addEventListener('click', ()=>{ addStopRow(); });
+
   // ---------------- Address geocoding + routing ----------------
   async function geocode(query){
     const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query);
@@ -1272,8 +1331,9 @@
     return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
   }
 
-  async function routeInfo(a, b){
-    const url = 'https://router.project-osrm.org/route/v1/driving/' + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=false';
+  async function routeInfo(waypoints){
+    const coordStr = waypoints.map(c=> c.lon + ',' + c.lat).join(';');
+    const url = 'https://router.project-osrm.org/route/v1/driving/' + coordStr + '?overview=false';
     const res = await fetch(url);
     if(!res.ok) throw new Error('routing failed');
     const data = await res.json();
@@ -1327,19 +1387,25 @@
     const fromAddr = $('fromLoc').value.trim();
     const toAddr = $('toLoc').value.trim();
     if(!fromAddr || !toAddr){ setGaugeStatus('Enter both a From and To address first.', true); return; }
+    const stopRows = stops.filter(s=> $('stopLoc'+s.id) && $('stopLoc'+s.id).value.trim());
     $('calcRouteBtn').disabled = true;
-    $('calcRouteBtn').textContent = (fromCoord && toCoord) ? 'Calculating route…' : 'Looking up addresses…';
+    $('calcRouteBtn').textContent = 'Looking up addresses…';
     setGaugeStatus('');
     try{
       const fromGeo = fromCoord || await geocode(fromAddr);
+      const stopGeos = [];
+      for(const s of stopRows){
+        stopGeos.push(s.coord || await geocode($('stopLoc'+s.id).value.trim()));
+      }
       const toGeo = toCoord || await geocode(toAddr);
       $('calcRouteBtn').textContent = 'Calculating route…';
-      const result = await routeInfo(fromGeo, toGeo);
+      const waypoints = [fromGeo, ...stopGeos, toGeo];
+      const result = await routeInfo(waypoints);
       addressDistance = result.miles;
       addressDuration = result.minutes;
       updateGauge();
       showRouteInfo();
-      setGaugeStatus('Route calculated ✓');
+      setGaugeStatus(stopRows.length > 0 ? 'Route with ' + stopRows.length + ' stop' + (stopRows.length>1?'s':'') + ' calculated ✓' : 'Route calculated ✓');
     }catch(err){
       addressDistance = 0;
       addressDuration = 0;
@@ -1471,7 +1537,7 @@
       toCoord = coord;
       $('toLoc').value = addr;
       $('endGpsBtn').textContent = 'Calculating distance…';
-      const result = await routeInfo(gpsStartCoord, coord);
+      const result = await routeInfo([gpsStartCoord, coord]);
       addressDistance = result.miles;
       addressDuration = result.minutes;
       updateGauge();
@@ -1518,14 +1584,17 @@
     addressDuration = 0;
     fromCoord = null;
     toCoord = null;
+    clearStops();
     hideRouteInfo();
     updateGauge();
   }
 
+  let editingTripOriginalVia = [];
   function editTrip(id){
     const t = trips.find(x=>x.id===id);
     if(!t) return;
     editingTripId = id;
+    editingTripOriginalVia = t.via || [];
     switchView('trip');
     document.querySelectorAll('.mode-tab').forEach(tab=>tab.classList.toggle('active', tab.dataset.mode==='manual'));
     mode = 'manual';
@@ -1551,6 +1620,7 @@
 
   $('cancelTripEditBtn').addEventListener('click', ()=>{
     editingTripId = null;
+    editingTripOriginalVia = [];
     resetTripFormFields(false);
     setGaugeStatus('');
     setTripFormEditingUI(false);
@@ -1568,6 +1638,7 @@
       date: $('tripDate').value || todayISO(),
       from: $('fromLoc').value.trim(),
       to: $('toLoc').value.trim(),
+      via: mode === 'address' ? getStopTexts() : (editingTripId ? editingTripOriginalVia : []),
       purpose: $('purpose').value.trim(),
       type: typeState,
       distance: Math.round(distance * 10) / 10,
@@ -1579,6 +1650,7 @@
       const idx = trips.findIndex(t=>t.id === editingTripId);
       if(idx > -1) trips[idx] = Object.assign({ id: editingTripId }, data);
       editingTripId = null;
+      editingTripOriginalVia = [];
       setTripFormEditingUI(false);
     }else{
       trips.unshift(Object.assign({ id: Date.now() }, data));
@@ -2027,7 +2099,7 @@
     function tripRows(list){
       return list.map(t=>[
         new Date(t.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),
-        t.from || '-', t.to || '-', t.purpose || '-', t.distance.toFixed(1) + ' mi'
+        tripRouteText(t, ' > ') || '-', t.purpose || '-', t.distance.toFixed(1) + ' mi'
       ]);
     }
 
@@ -2038,7 +2110,7 @@
     if(workTrips.length){
       doc.autoTable({
         startY: y,
-        head: [['Date','From','To','Purpose','Miles']],
+        head: [['Date','Route','Purpose','Miles']],
         body: tripRows(workTrips),
         theme: 'grid',
         headStyles: { fillColor: purple, textColor: 255, fontSize: 9 },
@@ -2059,7 +2131,7 @@
     if(personalTrips.length){
       doc.autoTable({
         startY: y,
-        head: [['Date','From','To','Purpose','Miles']],
+        head: [['Date','Route','Purpose','Miles']],
         body: tripRows(personalTrips),
         theme: 'grid',
         headStyles: { fillColor: [45,212,191], textColor: 255, fontSize: 9 },
@@ -2231,9 +2303,9 @@
           data: {
             labels: data.labels,
             datasets: [
-              { type:'bar', label:'Work miles', data: data.work, backgroundColor:'#8b5cf6', stack:'miles', yAxisID:'y', borderRadius:3 },
-              { type:'bar', label:'Personal miles', data: data.personal, backgroundColor:'#2dd4bf', stack:'miles', yAxisID:'y', borderRadius:3 },
-              { type:'line', label:'Hours worked', data: data.hours, borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,0.18)', yAxisID:'y1', tension:0.3, borderWidth:3, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#f5a623', fill: !hasMiles }
+              { type:'bar', label:'Work miles', data: data.work, backgroundColor:'rgba(139,92,246,0.45)', stack:'miles', yAxisID:'y', borderRadius:3, order:2 },
+              { type:'bar', label:'Personal miles', data: data.personal, backgroundColor:'rgba(45,212,191,0.45)', stack:'miles', yAxisID:'y', borderRadius:3, order:2 },
+              { type:'line', label:'Hours worked', data: data.hours, borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,0.18)', yAxisID:'y1', tension:0.3, borderWidth:3, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#f5a623', fill: !hasMiles, order:1 }
             ]
           },
           options: {
@@ -2269,7 +2341,7 @@
       return;
     }
     list.innerHTML = filtered.slice(0,50).map(t=>{
-      const route = (t.from || t.to) ? [t.from,t.to].filter(Boolean).join(' &rarr; ') : 'Trip';
+      const route = (t.from || t.to) ? tripRouteText(t, ' &rarr; ') : 'Trip';
       const dateFmt = new Date(t.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
       return '<div class="trip-row">'
         + '<div class="trip-date">' + dateFmt + '</div>'
@@ -2303,6 +2375,10 @@
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  function tripRouteText(t, sep){
+    return [t.from, ...(t.via||[]), t.to].filter(Boolean).join(sep);
   }
 
   // Formats decimal hours as H.MM where MM is literal minutes (0-59), not a decimal fraction.
@@ -2466,7 +2542,7 @@
       html = '<div class="empty-state"><strong>Nothing logged</strong>Add a trip or hours for this day below.</div>';
     }
     dayTrips.forEach(t=>{
-      const route = (t.from || t.to) ? [t.from,t.to].filter(Boolean).join(' \u2192 ') : 'Trip';
+      const route = (t.from || t.to) ? tripRouteText(t, ' \u2192 ') : 'Trip';
       html += '<div class="day-entry"><div class="de-main"><strong>' + route + '</strong><div>' + t.distance.toFixed(1) + ' mi &middot; ' + (t.type==='work'?'Work':'Personal') + '</div></div>'
         + '<div style="display:flex;gap:2px;"><button class="edit-btn" onclick="window.__editTripFromModal(' + t.id + ')" aria-label="Edit">&#9998;</button>'
         + '<button class="del-btn" onclick="window.__deleteTrip(' + t.id + ');window.__reopenModal()" aria-label="Delete">&times;</button></div></div>';
