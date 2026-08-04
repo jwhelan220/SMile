@@ -132,6 +132,7 @@
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
   .field label{font-size:12px;color:var(--text-muted);font-weight:500;}
   .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .row-2.single-col{grid-template-columns:1fr;}
   input, textarea, select{
     background:var(--bg); border:1px solid var(--border); border-radius:9px;
     padding:10px 12px; color:var(--text); font-size:14px; font-family:'Inter',sans-serif;
@@ -710,7 +711,7 @@
         <input type="date" id="tripDate">
       </div>
 
-      <div class="row-2">
+      <div class="row-2" id="fromToRow">
         <div class="field autocomplete-field">
           <label for="fromLoc">From</label>
           <div class="ac-wrap">
@@ -718,7 +719,7 @@
             <div class="ac-suggestions" id="fromSuggestions"></div>
           </div>
         </div>
-        <div class="field autocomplete-field">
+        <div class="field autocomplete-field" id="toFieldWrap">
           <label for="toLoc">To</label>
           <div class="ac-wrap">
             <input type="text" id="toLoc" autocomplete="off" placeholder="e.g. NEC Birmingham">
@@ -748,8 +749,7 @@
       </div>
 
       <div id="addressInput" class="hidden">
-        <div class="hint">Type at least 3 letters of an address to get suggestions, pick one for From and To, then calculate. Uses OpenStreetMap &mdash; it's a route estimate, so use odometer readings for exact mileage claims.</div>
-        <div class="hint" style="margin-top:-8px;">Got a stop along the way &mdash; e.g. depot &rarr; site &rarr; depot? Add it below to log it as one trip instead of two.</div>
+        <div class="hint">Add each stop in the order you'll visit them &mdash; the last one is where you end up. Going to site then home? Add "Site", then add "Home". Got another job the same day? Just keep adding stops &mdash; it all logs as one trip.</div>
         <div id="stopsContainer"></div>
         <button class="btn-secondary" id="addStopBtn" type="button" style="width:100%;margin-bottom:14px;">+ Add stop</button>
         <div class="field">
@@ -1190,6 +1190,9 @@
       $('manualInput').classList.toggle('hidden', mode!=='manual');
       $('addressInput').classList.toggle('hidden', mode!=='address');
       $('gpsInput').classList.toggle('hidden', mode!=='gps');
+      $('toFieldWrap').classList.toggle('hidden', mode==='address');
+      $('fromToRow').classList.toggle('single-col', mode==='address');
+      if(mode === 'address' && stops.length === 0){ addStopRow(); }
       if(mode === 'gps'){ refreshGpsUI(); }
       setGaugeStatus('');
       updateGauge();
@@ -1281,6 +1284,17 @@
     if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
   }
 
+  function renumberStops(){
+    const rows = Array.from(document.querySelectorAll('#stopsContainer .stop-row'));
+    rows.forEach((row,i)=>{
+      const label = row.querySelector('label');
+      const input = row.querySelector('input');
+      const isLast = i === rows.length - 1;
+      label.textContent = 'Stop ' + (i+1) + (isLast ? ' (destination)' : '');
+      input.placeholder = isLast ? 'e.g. Home, or back to Depot' : 'e.g. Client site';
+    });
+  }
+
   function addStopRow(prefillText){
     const idx = stopCounter++;
     const inputId = 'stopLoc' + idx;
@@ -1292,7 +1306,7 @@
     row.className = 'field autocomplete-field stop-row';
     row.dataset.stopId = idx;
     row.innerHTML = '<button type="button" class="remove-stop-btn">Remove</button>'
-      + '<label for="' + inputId + '">Via stop</label>'
+      + '<label for="' + inputId + '">Stop</label>'
       + '<div class="ac-wrap">'
       + '<input type="text" id="' + inputId + '" autocomplete="off" placeholder="e.g. Client site">'
       + '<div class="ac-suggestions" id="' + boxId + '"></div>'
@@ -1305,8 +1319,10 @@
     row.querySelector('.remove-stop-btn').addEventListener('click', ()=>{
       stops = stops.filter(s=>s.id !== idx);
       row.remove();
+      renumberStops();
       resetStopChangeState();
     });
+    renumberStops();
     return stopObj;
   }
 
@@ -1385,9 +1401,8 @@
 
   $('calcRouteBtn').addEventListener('click', async ()=>{
     const fromAddr = $('fromLoc').value.trim();
-    const toAddr = $('toLoc').value.trim();
-    if(!fromAddr || !toAddr){ setGaugeStatus('Enter both a From and To address first.', true); return; }
     const stopRows = stops.filter(s=> $('stopLoc'+s.id) && $('stopLoc'+s.id).value.trim());
+    if(!fromAddr || stopRows.length === 0){ setGaugeStatus('Enter a starting point and at least one stop.', true); return; }
     $('calcRouteBtn').disabled = true;
     $('calcRouteBtn').textContent = 'Looking up addresses…';
     setGaugeStatus('');
@@ -1397,15 +1412,15 @@
       for(const s of stopRows){
         stopGeos.push(s.coord || await geocode($('stopLoc'+s.id).value.trim()));
       }
-      const toGeo = toCoord || await geocode(toAddr);
       $('calcRouteBtn').textContent = 'Calculating route…';
-      const waypoints = [fromGeo, ...stopGeos, toGeo];
+      const waypoints = [fromGeo, ...stopGeos];
       const result = await routeInfo(waypoints);
       addressDistance = result.miles;
       addressDuration = result.minutes;
+      $('toLoc').value = $('stopLoc' + stopRows[stopRows.length-1].id).value.trim();
       updateGauge();
       showRouteInfo();
-      setGaugeStatus(stopRows.length > 0 ? 'Route with ' + stopRows.length + ' stop' + (stopRows.length>1?'s':'') + ' calculated ✓' : 'Route calculated ✓');
+      setGaugeStatus(stopRows.length > 1 ? 'Route with ' + stopRows.length + ' stops calculated ✓' : 'Route calculated ✓');
     }catch(err){
       addressDistance = 0;
       addressDuration = 0;
@@ -1585,6 +1600,7 @@
     fromCoord = null;
     toCoord = null;
     clearStops();
+    if(mode === 'address'){ addStopRow(); }
     hideRouteInfo();
     updateGauge();
   }
@@ -1602,6 +1618,9 @@
     $('manualInput').classList.remove('hidden');
     $('addressInput').classList.add('hidden');
     $('gpsInput').classList.add('hidden');
+    $('toFieldWrap').classList.remove('hidden');
+    $('fromToRow').classList.remove('single-col');
+    clearStops();
     $('manualDistance').value = t.distance;
     $('tripDate').value = t.date;
     $('fromLoc').value = t.from || '';
@@ -1634,11 +1653,20 @@
       setGaugeStatus('Enter a valid distance before logging.', true);
       return;
     }
+    let tripTo = $('toLoc').value.trim();
+    let tripVia = editingTripId ? editingTripOriginalVia : [];
+    if(mode === 'address'){
+      const allStops = getStopTexts();
+      if(allStops.length > 0){
+        tripTo = allStops[allStops.length - 1];
+        tripVia = allStops.slice(0, -1);
+      }
+    }
     const data = {
       date: $('tripDate').value || todayISO(),
       from: $('fromLoc').value.trim(),
-      to: $('toLoc').value.trim(),
-      via: mode === 'address' ? getStopTexts() : (editingTripId ? editingTripOriginalVia : []),
+      to: tripTo,
+      via: tripVia,
       purpose: $('purpose').value.trim(),
       type: typeState,
       distance: Math.round(distance * 10) / 10,
