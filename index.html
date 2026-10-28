@@ -149,7 +149,6 @@
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
   .field label{font-size:12px;color:var(--text-muted);font-weight:500;}
   .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .row-2.single-col{grid-template-columns:1fr;}
   input, textarea, select{
     background:var(--bg); border:1px solid var(--border); border-radius:9px;
     padding:10px 12px; color:var(--text); font-size:14px; font-family:'Inter',sans-serif;
@@ -172,20 +171,6 @@
   .ac-item{padding:10px 12px; font-size:12.5px; line-height:1.4; cursor:pointer; border-bottom:1px solid var(--border);}
   .ac-item:last-child{border-bottom:none;}
   .ac-item:hover{background:var(--bg); color:var(--text);}
-
-  /* Route info */
-  .route-info{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:14px;}
-  .route-info-row{display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:4px 0;}
-  .route-info-row span{color:var(--text-muted);}
-  .route-info-row strong{font-family:'Space Mono',monospace; color:var(--text);}
-
-  /* Trip stops */
-  .stop-row{position:relative; margin-bottom:14px;}
-  .stop-row .remove-stop-btn{
-    position:absolute; top:0; right:0; background:none; border:none; color:var(--text-dim);
-    font-size:11px; cursor:pointer; padding:2px 0; text-decoration:underline;
-  }
-  .stop-row .remove-stop-btn:hover{color:var(--danger);}
 
   .btn-secondary{
     background:var(--bg); border:1px solid var(--border); color:var(--text);
@@ -311,15 +296,6 @@
     transition:color .15s ease, background .15s ease;
   }
   .edit-btn:hover{color:var(--purple); background:rgba(139,92,246,0.1);}
-
-  /* GPS trip */
-  .gps-status{
-    background:var(--bg); border:1px solid var(--purple); border-radius:10px; padding:12px 14px;
-    margin-bottom:14px; font-size:12.5px; color:var(--text-muted); display:none; line-height:1.5;
-  }
-  .gps-status strong{color:var(--text);}
-  .gps-cancel{background:none;border:none;color:var(--text-dim);font-size:11px;text-decoration:underline;cursor:pointer;padding:6px 0 0;display:block;}
-  .gps-cancel:hover{color:var(--danger);}
 
   .empty-state{padding:36px 10px;text-align:center;color:var(--text-dim);font-size:13px;}
   .empty-state strong{display:block;color:var(--text-muted);font-size:14px;margin-bottom:4px;font-family:'Space Grotesk',sans-serif;}
@@ -633,6 +609,16 @@
         <button class="btn-secondary" id="testSyncBtn">Test connection</button>
       </div>
       <div class="gauge-status" id="syncSettingsStatus" style="text-align:left;margin-top:10px;"></div>
+
+      <div id="feedBox" class="hidden" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+        <div class="card-head" style="margin-bottom:6px;">Jobs calendar feed</div>
+        <div class="hint" style="margin-top:0;">Your jobs are published as a calendar your iPhone can subscribe to. Once TimeTree is set to import that calendar into your shared calendar, new jobs appear there on their own. Keep this link private; it contains your token.</div>
+        <div class="row-2">
+          <a class="btn-secondary" id="feedSubscribeLink" href="#" style="display:block;text-align:center;text-decoration:none;">Subscribe on iPhone</a>
+          <button class="btn-secondary" id="copyFeedBtn" type="button">Copy feed link</button>
+        </div>
+        <div class="gauge-status" id="feedStatus" style="text-align:left;margin-top:10px;"></div>
+      </div>
     </div>
 
     <div class="card" id="installCard">
@@ -734,14 +720,8 @@
   <!-- ============ LOG TRIP ============ -->
   <div class="view" id="view-trip">
     <div class="card">
-      <div class="card-head">Distance calculator</div>
-
-      <div class="mode-tabs">
-        <div class="mode-tab active" data-mode="odometer">Odometer</div>
-        <div class="mode-tab" data-mode="manual">Manual</div>
-        <div class="mode-tab" data-mode="address">From &rarr; To</div>
-        <div class="mode-tab" data-mode="gps">GPS trip</div>
-      </div>
+      <div class="card-head">Log a trip</div>
+      <div class="hint" style="margin-top:-4px;">Drives recorded by CarPlay appear on the Dashboard to confirm. Use this for anything else: enter the odometer readings.</div>
 
       <div class="field hidden" id="recentAddressWrap">
         <label for="recentAddressSelect">Recommended location</label>
@@ -755,14 +735,14 @@
 
       <div class="row-2" id="fromToRow">
         <div class="field autocomplete-field">
-          <label for="fromLoc">From</label>
+          <label for="fromLoc">From (optional)</label>
           <div class="ac-wrap">
             <input type="text" id="fromLoc" autocomplete="off" placeholder="e.g. Depot, Manchester">
             <div class="ac-suggestions" id="fromSuggestions"></div>
           </div>
         </div>
         <div class="field autocomplete-field" id="toFieldWrap">
-          <label for="toLoc">To</label>
+          <label for="toLoc">To (optional)</label>
           <div class="ac-wrap">
             <input type="text" id="toLoc" autocomplete="off" placeholder="e.g. NEC Birmingham">
             <div class="ac-suggestions" id="toSuggestions"></div>
@@ -788,31 +768,6 @@
           <label for="manualDistance">Distance travelled (mi)</label>
           <input type="number" id="manualDistance" placeholder="e.g. 57" min="0" step="0.1">
         </div>
-      </div>
-
-      <div id="addressInput" class="hidden">
-        <div class="hint">Add each stop in the order you'll visit them &mdash; the last one is where you end up. Going to site then home? Add "Site", then add "Home". Got another job the same day? Just keep adding stops &mdash; it all logs as one trip.</div>
-        <div id="stopsContainer"></div>
-        <button class="btn-secondary" id="addStopBtn" type="button" style="width:100%;margin-bottom:14px;">+ Add stop</button>
-        <div class="field">
-          <label for="arrivalTime">Need to arrive on site by (optional)</label>
-          <input type="time" id="arrivalTime">
-        </div>
-        <button class="btn-secondary" id="calcRouteBtn" style="width:100%;margin-bottom:14px;">Calculate route</button>
-        <div class="route-info hidden" id="routeInfo">
-          <div class="route-info-row"><span>Estimated drive time</span><strong id="routeDuration">&mdash;</strong></div>
-          <div class="route-info-row" id="leaveByRow" style="display:none;"><span>Leave by</span><strong id="leaveByTime">&mdash;</strong></div>
-        </div>
-      </div>
-
-      <div id="gpsInput" class="hidden">
-        <div class="hint">Tap Start when you set off &mdash; it captures your location as the From address. Tap End when you arrive to fill in the To address and calculate the driving distance automatically.</div>
-        <div class="gps-status" id="gpsStatusBox">
-          <span id="gpsStatusText"></span>
-          <button class="gps-cancel" id="cancelGpsBtn">Cancel this trip</button>
-        </div>
-        <button class="btn-secondary" id="startGpsBtn" style="width:100%;">Start trip</button>
-        <button class="btn-primary teal hidden" id="endGpsBtn" style="width:100%;margin-top:0;">End trip</button>
       </div>
 
       <div class="gauge-wrap">
@@ -966,19 +921,12 @@
   let filter = 'all';
   let typeState = 'personal';
   let currentDistance = 0;
-  let addressDistance = 0;
-  let addressDuration = 0; // minutes
-  let fromCoord = null;
-  let toCoord = null;
   let activeAddressField = 'fromLoc';
 
   let editingTripId = null;
   let editingHoursId = null;
   let editingJobId = null;
 
-  let gpsStartCoord = null;
-  let gpsStartTime = null;
-  let gpsFromAddr = '';
 
   let calYear, calMonth; // 0-indexed month for calendar view
   const now = new Date();
@@ -1034,7 +982,6 @@
     activeProfileId = id;
     rawSet('app:activeProfileId', activeProfileId);
     editingTripId = null; editingHoursId = null; editingJobId = null;
-    gpsStartCoord = null; gpsStartTime = null; gpsFromAddr = '';
     await loadAll();
   }
 
@@ -1054,7 +1001,7 @@
     if(profiles.length <= 1){ window.alert('You need at least one profile.'); return; }
     const current = profiles.find(p=>p.id===activeProfileId);
     if(!window.confirm('Delete profile "' + (current ? current.name : '') + '" and all its logged data? This can\u2019t be undone.')) return;
-    ['trips','hoursEntries','jobs','settings','activeGpsTrip'].forEach(base=> rawDelete(pKey(base)));
+    ['trips','hoursEntries','jobs','settings'].forEach(base=> rawDelete(pKey(base)));
     profiles = profiles.filter(p=>p.id !== activeProfileId);
     rawSet('app:profiles', JSON.stringify(profiles));
     renderProfileSelect();
@@ -1092,27 +1039,16 @@
     lastCarSync = 0;
     $('syncSettingsStatus').textContent = '';
     $('fromLoc').value = '';
-    try{
-      const raw = rawGet(pKey('activeGpsTrip'));
-      if(raw){
-        const data = JSON.parse(raw);
-        if(data && data.coord){
-          gpsStartCoord = data.coord;
-          gpsStartTime = data.time;
-          gpsFromAddr = data.addr || '';
-          fromCoord = data.coord;
-          $('fromLoc').value = gpsFromAddr;
-        }
-      }
-    }catch(e){}
+    rawDelete(pKey('activeGpsTrip'));
     renderProfileSelect();
     autoSuggestWorkForDate();
     renderAll();
     syncCarTrips();
+    pushJobsSoon();
   }
   async function saveTrips(){ rawSet(pKey('trips'), JSON.stringify(trips)); }
   async function saveHours(){ rawSet(pKey('hoursEntries'), JSON.stringify(hoursEntries)); }
-  async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); }
+  async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); pushJobsSoon(); }
   async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName, syncUrl, syncToken})); }
 
   // ---------------- Job helpers ----------------
@@ -1236,30 +1172,13 @@
     if(view === 'trends') renderTrends();
   }
 
-  // ---------------- Trip mode tabs ----------------
-  document.querySelectorAll('.mode-tab').forEach(tab=>{
-    tab.addEventListener('click', ()=>{
-      document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      mode = tab.dataset.mode;
-      $('odometerInputs').classList.toggle('hidden', mode!=='odometer');
-      $('manualInput').classList.toggle('hidden', mode!=='manual');
-      $('addressInput').classList.toggle('hidden', mode!=='address');
-      $('gpsInput').classList.toggle('hidden', mode!=='gps');
-      $('toFieldWrap').classList.toggle('hidden', mode==='address');
-      $('fromToRow').classList.toggle('single-col', mode==='address');
-      if(mode === 'address' && stops.length === 0){ addStopRow(); }
-      if(mode === 'gps'){ refreshGpsUI(); }
-      setGaugeStatus('');
-      updateGauge();
-    });
-  });
+  // Odometer is the normal way to enter a trip. 'manual' (a typed distance) is only used while editing an existing trip.
+  function setTripMode(m){
+    mode = m;
+    $('odometerInputs').classList.toggle('hidden', m !== 'odometer');
+    $('manualInput').classList.toggle('hidden', m !== 'manual');
+  }
   ['startOdo','endOdo','manualDistance'].forEach(id=>{ $(id).addEventListener('input', updateGauge); });
-  ['fromLoc','toLoc'].forEach(id=>{
-    $(id).addEventListener('input', ()=>{
-      if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
-    });
-  });
   $('fromLoc').addEventListener('focus', ()=>{ activeAddressField = 'fromLoc'; });
   $('toLoc').addEventListener('focus', ()=>{ activeAddressField = 'toLoc'; });
 
@@ -1269,11 +1188,9 @@
       const e = parseFloat($('endOdo').value);
       if(!isNaN(s) && !isNaN(e) && e >= s) return e - s;
       return 0;
-    }else if(mode === 'manual'){
+    }else{
       const d = parseFloat($('manualDistance').value);
       return !isNaN(d) && d >= 0 ? d : 0;
-    }else{
-      return addressDistance || 0;
     }
   }
 
@@ -1322,87 +1239,16 @@
           onSelect({ lat: parseFloat(r.lat), lon: parseFloat(r.lon) });
           box.classList.remove('open');
           box.innerHTML = '';
-          if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
         });
       });
     }, 400);
     input.addEventListener('input', ()=>{ onSelect(null); runSearch(); });
     input.addEventListener('blur', ()=>{ setTimeout(()=>box.classList.remove('open'), 150); });
   }
-  setupAutocomplete('fromLoc', 'fromSuggestions', c=>{ fromCoord = c; });
-  setupAutocomplete('toLoc', 'toSuggestions', c=>{ toCoord = c; });
+  setupAutocomplete('fromLoc', 'fromSuggestions', ()=>{});
+  setupAutocomplete('toLoc', 'toSuggestions', ()=>{});
 
-  // ---------------- Trip stops ----------------
-  let stops = [];
-  let stopCounter = 0;
-
-  function resetStopChangeState(){
-    if(mode === 'address'){ addressDistance = 0; addressDuration = 0; hideRouteInfo(); setGaugeStatus(''); updateGauge(); }
-  }
-
-  function renumberStops(){
-    const rows = Array.from(document.querySelectorAll('#stopsContainer .stop-row'));
-    rows.forEach((row,i)=>{
-      const label = row.querySelector('label');
-      const input = row.querySelector('input');
-      const isLast = i === rows.length - 1;
-      label.textContent = 'Stop ' + (i+1) + (isLast ? ' (destination)' : '');
-      input.placeholder = isLast ? 'e.g. Home, or back to Depot' : 'e.g. Client site';
-    });
-  }
-
-  function addStopRow(prefillText){
-    const idx = stopCounter++;
-    const inputId = 'stopLoc' + idx;
-    const boxId = 'stopSuggestions' + idx;
-    const stopObj = { id: idx, coord: null };
-    stops.push(stopObj);
-
-    const row = document.createElement('div');
-    row.className = 'field autocomplete-field stop-row';
-    row.dataset.stopId = idx;
-    row.innerHTML = '<button type="button" class="remove-stop-btn">Remove</button>'
-      + '<label for="' + inputId + '">Stop</label>'
-      + '<div class="ac-wrap">'
-      + '<input type="text" id="' + inputId + '" autocomplete="off" placeholder="e.g. Client site">'
-      + '<div class="ac-suggestions" id="' + boxId + '"></div>'
-      + '</div>';
-    $('stopsContainer').appendChild(row);
-    if(prefillText) $(inputId).value = prefillText;
-
-    setupAutocomplete(inputId, boxId, c=>{ stopObj.coord = c; });
-    $(inputId).addEventListener('input', ()=>{ stopObj.coord = null; resetStopChangeState(); });
-    row.querySelector('.remove-stop-btn').addEventListener('click', ()=>{
-      stops = stops.filter(s=>s.id !== idx);
-      row.remove();
-      renumberStops();
-      resetStopChangeState();
-    });
-    renumberStops();
-    return stopObj;
-  }
-
-  function clearStops(){
-    stops = [];
-    $('stopsContainer').innerHTML = '';
-  }
-
-  function getStopTexts(){
-    return stops.map(s=> ($('stopLoc' + s.id) ? $('stopLoc' + s.id).value.trim() : '')).filter(Boolean);
-  }
-
-  $('addStopBtn').addEventListener('click', ()=>{ addStopRow(); });
-
-  // ---------------- Address geocoding + routing ----------------
-  async function geocode(query){
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query);
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    if(!res.ok) throw new Error('geocode failed');
-    const data = await res.json();
-    if(!data || !data.length) throw new Error('Address not found: ' + query);
-    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-  }
-
+  // ---------------- Routing ----------------
   async function routeInfo(waypoints){
     const coordStr = waypoints.map(c=> c.lon + ',' + c.lat).join(';');
     const url = 'https://router.project-osrm.org/route/v1/driving/' + coordStr + '?overview=false';
@@ -1414,35 +1260,6 @@
     return { miles: r.distance * MI_PER_METER, minutes: r.duration / 60 };
   }
 
-  function formatDuration(mins){
-    const h = Math.floor(mins / 60);
-    const m = Math.round(mins % 60);
-    return h > 0 ? (h + 'h ' + m + 'm') : (m + 'm');
-  }
-
-  function showRouteInfo(){
-    $('routeDuration').textContent = formatDuration(addressDuration);
-    $('routeInfo').classList.remove('hidden');
-    updateLeaveBy();
-  }
-  function hideRouteInfo(){
-    $('routeInfo').classList.add('hidden');
-    $('leaveByRow').style.display = 'none';
-  }
-  function updateLeaveBy(){
-    const arrival = $('arrivalTime').value;
-    if(!arrival || !addressDuration){ $('leaveByRow').style.display = 'none'; return; }
-    const tripDateVal = $('tripDate').value || todayISO();
-    const arrivalDate = new Date(tripDateVal + 'T' + arrival + ':00');
-    const leaveDate = new Date(arrivalDate.getTime() - addressDuration * 60000);
-    const hh = String(leaveDate.getHours()).padStart(2, '0');
-    const mm = String(leaveDate.getMinutes()).padStart(2, '0');
-    const dayLabel = leaveDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
-    $('leaveByTime').textContent = hh + ':' + mm + ' (' + dayLabel + ')';
-    $('leaveByRow').style.display = 'flex';
-  }
-  $('arrivalTime').addEventListener('change', updateLeaveBy);
-  $('tripDate').addEventListener('change', updateLeaveBy);
   function autoSuggestWorkForDate(){
     if(editingTripId) return; // don't override an in-progress edit
     if(jobsForDate($('tripDate').value).length > 0 && typeState !== 'work'){
@@ -1454,40 +1271,6 @@
     }
   }
   $('tripDate').addEventListener('change', autoSuggestWorkForDate);
-
-  $('calcRouteBtn').addEventListener('click', async ()=>{
-    const fromAddr = $('fromLoc').value.trim();
-    const stopRows = stops.filter(s=> $('stopLoc'+s.id) && $('stopLoc'+s.id).value.trim());
-    if(!fromAddr || stopRows.length === 0){ setGaugeStatus('Enter a starting point and at least one stop.', true); return; }
-    $('calcRouteBtn').disabled = true;
-    $('calcRouteBtn').textContent = 'Looking up addresses…';
-    setGaugeStatus('');
-    try{
-      const fromGeo = fromCoord || await geocode(fromAddr);
-      const stopGeos = [];
-      for(const s of stopRows){
-        stopGeos.push(s.coord || await geocode($('stopLoc'+s.id).value.trim()));
-      }
-      $('calcRouteBtn').textContent = 'Calculating route…';
-      const waypoints = [fromGeo, ...stopGeos];
-      const result = await routeInfo(waypoints);
-      addressDistance = result.miles;
-      addressDuration = result.minutes;
-      $('toLoc').value = $('stopLoc' + stopRows[stopRows.length-1].id).value.trim();
-      updateGauge();
-      showRouteInfo();
-      setGaugeStatus(stopRows.length > 1 ? 'Route with ' + stopRows.length + ' stops calculated ✓' : 'Route calculated ✓');
-    }catch(err){
-      addressDistance = 0;
-      addressDuration = 0;
-      updateGauge();
-      hideRouteInfo();
-      setGaugeStatus('Could not calculate that route — check the addresses, or switch to Manual / Odometer.', true);
-    }finally{
-      $('calcRouteBtn').disabled = false;
-      $('calcRouteBtn').textContent = 'Calculate route';
-    }
-  });
 
   // ---------------- Recent addresses ----------------
   function computeRecentAddresses(){
@@ -1530,18 +1313,7 @@
     $('recentAddressSelect').value = '';
   });
 
-  // ---------------- GPS trip capture ----------------
-  function getPosition(){
-    return new Promise((resolve, reject)=>{
-      if(!navigator.geolocation){ reject(new Error('Geolocation not supported')); return; }
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-        err => reject(err),
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
-    });
-  }
-
+  // ---------------- Reverse geocoding (used by car trip sync) ----------------
   async function reverseGeocode(coord){
     try{
       const url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + coord.lat + '&lon=' + coord.lon;
@@ -1553,81 +1325,6 @@
       return coord.lat.toFixed(4) + ', ' + coord.lon.toFixed(4);
     }
   }
-
-  function refreshGpsUI(){
-    if(gpsStartCoord){
-      $('startGpsBtn').classList.add('hidden');
-      $('endGpsBtn').classList.remove('hidden');
-      $('gpsStatusBox').style.display = 'block';
-      $('gpsStatusText').innerHTML = 'Trip in progress since <strong>' + new Date(gpsStartTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + '</strong> from <strong>' + escapeHtml(gpsFromAddr) + '</strong>';
-    }else{
-      $('startGpsBtn').classList.remove('hidden');
-      $('endGpsBtn').classList.add('hidden');
-      $('gpsStatusBox').style.display = 'none';
-    }
-  }
-
-  async function saveActiveGpsTrip(){
-    rawSet(pKey('activeGpsTrip'), JSON.stringify({ coord: gpsStartCoord, time: gpsStartTime, addr: gpsFromAddr }));
-  }
-  async function clearActiveGpsTrip(){
-    gpsStartCoord = null; gpsStartTime = null; gpsFromAddr = '';
-    rawDelete(pKey('activeGpsTrip'));
-  }
-
-  $('startGpsBtn').addEventListener('click', async ()=>{
-    $('startGpsBtn').disabled = true;
-    $('startGpsBtn').textContent = 'Getting your location…';
-    setGaugeStatus('');
-    try{
-      const coord = await getPosition();
-      const addr = await reverseGeocode(coord);
-      gpsStartCoord = coord;
-      gpsStartTime = Date.now();
-      gpsFromAddr = addr;
-      fromCoord = coord;
-      $('fromLoc').value = addr;
-      $('tripDate').value = todayISO();
-      await saveActiveGpsTrip();
-      refreshGpsUI();
-    }catch(err){
-      setGaugeStatus('Could not get your location — check that location access is allowed for this page.', true);
-    }finally{
-      $('startGpsBtn').disabled = false;
-      $('startGpsBtn').textContent = 'Start trip';
-    }
-  });
-
-  $('endGpsBtn').addEventListener('click', async ()=>{
-    $('endGpsBtn').disabled = true;
-    $('endGpsBtn').textContent = 'Getting your location…';
-    setGaugeStatus('');
-    try{
-      const coord = await getPosition();
-      const addr = await reverseGeocode(coord);
-      toCoord = coord;
-      $('toLoc').value = addr;
-      $('endGpsBtn').textContent = 'Calculating distance…';
-      const result = await routeInfo([gpsStartCoord, coord]);
-      addressDistance = result.miles;
-      addressDuration = result.minutes;
-      updateGauge();
-      await clearActiveGpsTrip();
-      refreshGpsUI();
-      setGaugeStatus('Trip distance calculated ✓ — review the details below and log it.');
-    }catch(err){
-      setGaugeStatus('Could not finish the trip — check location access, then try End trip again.', true);
-    }finally{
-      $('endGpsBtn').disabled = false;
-      $('endGpsBtn').textContent = 'End trip';
-    }
-  });
-
-  $('cancelGpsBtn').addEventListener('click', async ()=>{
-    await clearActiveGpsTrip();
-    refreshGpsUI();
-    setGaugeStatus('');
-  });
 
   // ---------------- Type toggle ----------------
   const toggle = $('typeToggle');
@@ -1647,17 +1344,12 @@
 
   function resetTripFormFields(keepEndAsStart){
     const lastEnd = $('endOdo').value;
-    $('startOdo').value = keepEndAsStart && mode === 'odometer' && lastEnd ? lastEnd : '';
+    const wasOdometer = mode === 'odometer';
+    setTripMode('odometer');
+    $('startOdo').value = keepEndAsStart && wasOdometer && lastEnd ? lastEnd : '';
     $('endOdo').value = '';
     $('manualDistance').value = '';
     $('purpose').value = '';
-    addressDistance = 0;
-    addressDuration = 0;
-    fromCoord = null;
-    toCoord = null;
-    clearStops();
-    if(mode === 'address'){ addStopRow(); }
-    hideRouteInfo();
     updateGauge();
   }
 
@@ -1668,15 +1360,7 @@
     editingTripId = id;
     editingTripOriginalVia = t.via || [];
     switchView('trip');
-    document.querySelectorAll('.mode-tab').forEach(tab=>tab.classList.toggle('active', tab.dataset.mode==='manual'));
-    mode = 'manual';
-    $('odometerInputs').classList.add('hidden');
-    $('manualInput').classList.remove('hidden');
-    $('addressInput').classList.add('hidden');
-    $('gpsInput').classList.add('hidden');
-    $('toFieldWrap').classList.remove('hidden');
-    $('fromToRow').classList.remove('single-col');
-    clearStops();
+    setTripMode('manual');
     $('manualDistance').value = t.distance;
     $('tripDate').value = t.date;
     $('fromLoc').value = t.from || '';
@@ -1687,7 +1371,7 @@
     $('labelWork').classList.toggle('on', typeState === 'work');
     $('labelPersonal').classList.toggle('on', typeState === 'personal');
     updateGauge();
-    setGaugeStatus('Editing trip — distance shown as Manual. Update it if needed, then Update trip.');
+    setGaugeStatus('Editing trip. Change the distance if needed, then press Update trip.');
     setTripFormEditingUI(true);
   }
   window.__editTrip = editTrip;
@@ -1709,15 +1393,8 @@
       setGaugeStatus('Enter a valid distance before logging.', true);
       return;
     }
-    let tripTo = $('toLoc').value.trim();
-    let tripVia = editingTripId ? editingTripOriginalVia : [];
-    if(mode === 'address'){
-      const allStops = getStopTexts();
-      if(allStops.length > 0){
-        tripTo = allStops[allStops.length - 1];
-        tripVia = allStops.slice(0, -1);
-      }
-    }
+    const tripTo = $('toLoc').value.trim();
+    const tripVia = editingTripId ? editingTripOriginalVia : [];
     const data = {
       date: $('tripDate').value || todayISO(),
       from: $('fromLoc').value.trim(),
@@ -1975,6 +1652,38 @@
 
   function carSyncConfigured(){ return !!(syncUrl && syncToken); }
 
+  // ---- Jobs calendar feed (published by the same backend; TimeTree imports it via the iPhone calendar) ----
+  function feedUrl(){
+    return syncUrl + (syncUrl.indexOf('?') === -1 ? '?' : '&') + 'action=calendar&token=' + encodeURIComponent(syncToken);
+  }
+  function renderFeedBox(){
+    const on = carSyncConfigured();
+    $('feedBox').classList.toggle('hidden', !on);
+    if(!on) return;
+    $('feedSubscribeLink').href = feedUrl().replace(/^https?:\/\//, 'webcal://');
+  }
+
+  let pushJobsTimer = null;
+  function pushJobsSoon(){
+    if(!carSyncConfigured()) return;
+    clearTimeout(pushJobsTimer);
+    pushJobsTimer = setTimeout(pushJobs, 800);
+  }
+  async function pushJobs(){
+    if(!carSyncConfigured()) return;
+    const profileAtStart = activeProfileId;
+    const list = jobs.map(j => ({ id: j.id, title: j.title, location: j.location || '', startDate: j.startDate, endDate: j.endDate, notes: j.notes || '' }));
+    try{
+      // No Content-Type header, so the browser sends it as plain text and no pre-flight check is needed.
+      const res = await fetch(syncUrl, { method: 'POST', body: JSON.stringify({ token: syncToken, action: 'setjobs', jobs: list }) });
+      const data = await res.json();
+      if(profileAtStart !== activeProfileId) return;
+      $('feedStatus').textContent = data.ok ? ('Feed updated with ' + data.saved + ' job' + (data.saved === 1 ? '' : 's') + '.') : ('Feed not updated: ' + (data.error || 'unknown error'));
+    }catch(e){
+      $('feedStatus').textContent = 'Couldn’t update the feed (' + e.message + '). It will retry next time you change a job or open the app.';
+    }
+  }
+
   function setCarStatus(msg){ $('carTripStatus').textContent = msg || ''; }
 
   function newCarTripState(t){
@@ -2082,6 +1791,7 @@
   function renderCarTrips(){
     const configured = carSyncConfigured();
     $('carTripsCard').classList.toggle('hidden', !configured);
+    renderFeedBox();
     const n = carTrips.length;
     $('carTripsCount').textContent = n ? '(' + n + ')' : '';
     $('navBadge').textContent = n ? String(n) : '';
@@ -2154,7 +1864,16 @@
     await saveSettings();
     $('syncSettingsStatus').textContent = (syncUrl && syncToken) ? 'Saved.' : 'Saved. Sync is off until both fields are filled in.';
     renderCarTrips();
-    if(carSyncConfigured()) syncCarTrips();
+    if(carSyncConfigured()){ syncCarTrips(); pushJobs(); }
+  });
+
+  $('copyFeedBtn').addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(feedUrl());
+      $('feedStatus').textContent = 'Feed link copied.';
+    }catch(e){
+      window.prompt('Copy this feed link:', feedUrl());
+    }
   });
 
   $('testSyncBtn').addEventListener('click', async () => {
