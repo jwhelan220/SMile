@@ -88,6 +88,8 @@
   .profile-bar{display:flex; gap:8px; align-items:center; margin-bottom:14px;}
   .profile-bar select{flex:1; min-width:0;}
   .profile-btn{padding:10px 12px; white-space:nowrap; flex-shrink:0;}
+  .tenure{font-size:12.5px; color:var(--text-muted); margin:-6px 0 14px;}
+  .tenure strong{color:var(--text); font-weight:600;}
   #deleteProfileBtn:hover{border-color:var(--danger); color:var(--danger);}
 
   /* Nav */
@@ -114,6 +116,15 @@
   .car-trip-fields label{display:block; font-size:11.5px; color:var(--text-muted); margin-bottom:4px;}
   .seg{display:flex; gap:6px; margin-bottom:10px;}
   .seg-btn{flex:1; text-align:center; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif; user-select:none;}
+  .seg-btn.on{background:linear-gradient(135deg,var(--purple),var(--purple-deep)); border-color:transparent; color:#fff;}
+  .cal-cell.remote{background:rgba(45,212,191,0.08); border-color:rgba(45,212,191,0.3);}
+  .cal-cell.holiday{background:rgba(245,166,35,0.08); border-color:rgba(245,166,35,0.3);}
+  .cal-legend .sw.remote{background:rgba(45,212,191,0.2);border:1px solid rgba(45,212,191,0.5);}
+  .cal-legend .sw.holiday{background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.5);}
+  .job-type{font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:20px; margin-right:6px; text-transform:uppercase; letter-spacing:.04em;}
+  .job-type.onsite{background:rgba(139,92,246,0.15); color:#c4b5fd;}
+  .job-type.remote{background:rgba(45,212,191,0.15); color:#7fe9dc;}
+  .job-type.holiday{background:rgba(245,166,35,0.15); color:#f5c877;}
   .seg-btn.on-work{background:linear-gradient(135deg,var(--purple),var(--purple-deep)); border-color:transparent; color:#fff;}
   .seg-btn.on-personal{background:linear-gradient(135deg,var(--teal),#1a9e8e); border-color:transparent; color:#04130f;}
   .car-trip-actions{display:flex; gap:8px;}
@@ -258,6 +269,7 @@
 
   .contracted-row{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12.5px;color:var(--text-muted);}
   .contracted-row input{width:80px;padding:6px 10px;font-size:13px;}
+  .contracted-row input[type=date]{width:auto;}
 
   /* History */
   .history-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
@@ -307,6 +319,7 @@
     color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
   }
   .cal-nav-btn:hover{border-color:var(--purple);}
+  .cal-nav-btn:disabled{opacity:.3;cursor:default;border-color:var(--border);}
   .cal-month-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
   .cal-dow{text-align:center;font-size:10.5px;color:var(--text-dim);font-weight:600;letter-spacing:0.4px;padding-bottom:6px;}
@@ -437,6 +450,7 @@
     <button class="btn-secondary profile-btn" id="addProfileBtn" title="New profile">+ New</button>
     <button class="btn-secondary profile-btn" id="deleteProfileBtn" title="Delete this profile">Delete</button>
   </div>
+  <div class="tenure hidden" id="tenureLine"></div>
 
   <div class="nav">
     <div class="nav-item active" data-view="dashboard">Dashboard<span class="nav-badge" id="navBadge"></span></div>
@@ -558,6 +572,10 @@
         Monthly contracted hours:
         <input type="number" id="contractedHours" value="160" min="0" step="1">
       </div>
+      <div class="contracted-row">
+        Contract start date:
+        <input type="date" id="contractStart">
+      </div>
     </div>
 
     <div class="card">
@@ -656,7 +674,9 @@
         <div class="cal-grid" id="calDow"></div>
         <div class="cal-grid" id="calGrid" style="margin-top:5px;"></div>
         <div class="cal-legend">
-          <span><span class="sw away"></span>Away on a job</span>
+          <span><span class="sw away"></span>On site</span>
+          <span><span class="sw remote"></span>Remote</span>
+          <span><span class="sw holiday"></span>Holiday</span>
           <span><span class="sw over"></span>Worked over expected hours</span>
           <span><span class="dot work"></span>Work trip</span>
           <span><span class="dot personal"></span>Personal trip</span>
@@ -683,27 +703,39 @@
   <div class="view" id="view-jobs">
     <div class="card">
       <div class="card-head">Log a job</div>
-      <div class="hint" style="margin-top:-4px;">A job is a shift or event that takes you away from home. Give it a date range and a general expected working time, then log your actual hours as you go &mdash; the calendar will flag any day you went over.</div>
+      <div class="seg" id="jobTypeTabs" role="tablist" style="margin-top:2px;">
+        <div class="seg-btn on" data-jobtype="onsite" role="tab">On site</div>
+        <div class="seg-btn" data-jobtype="remote" role="tab">Remote</div>
+        <div class="seg-btn" data-jobtype="holiday" role="tab">Holiday</div>
+      </div>
+      <div class="hint" id="jobTypeHint" style="margin-top:-2px;"></div>
 
-      <div class="field">
+      <div class="field hidden" id="jobLeaveField">
+        <label for="jobLeave">Type of leave</label>
+        <select id="jobLeave">
+          <option value="annual">Annual leave</option>
+          <option value="unpaid">Unpaid leave</option>
+        </select>
+      </div>
+      <div class="field" id="jobTitleField">
         <label for="jobTitle">Job / event title</label>
         <input type="text" id="jobTitle" placeholder="e.g. Co-op Live deployment">
       </div>
-      <div class="field">
+      <div class="field" id="jobLocationField">
         <label for="jobLocation">Location</label>
         <input type="text" id="jobLocation" placeholder="e.g. Manchester">
       </div>
       <div class="row-2">
         <div class="field">
-          <label for="jobStart">Away from</label>
+          <label for="jobStart" id="jobStartLabel">Away from</label>
           <input type="date" id="jobStart">
         </div>
         <div class="field">
-          <label for="jobEnd">Away until</label>
+          <label for="jobEnd" id="jobEndLabel">Away until</label>
           <input type="date" id="jobEnd">
         </div>
       </div>
-      <div class="row-2">
+      <div class="row-2" id="jobExpectedRow">
         <div class="field">
           <label for="jobExpectedH">Expected hours/day</label>
           <input type="number" id="jobExpectedH" placeholder="e.g. 10" min="0" step="1">
@@ -723,6 +755,12 @@
 
     <div class="card">
       <div class="card-head">Jobs</div>
+      <div class="seg" id="jobFilterTabs" style="margin-bottom:14px;">
+        <div class="seg-btn on" data-jobfilter="all">All</div>
+        <div class="seg-btn" data-jobfilter="onsite">On site</div>
+        <div class="seg-btn" data-jobfilter="remote">Remote</div>
+        <div class="seg-btn" data-jobfilter="holiday">Holiday</div>
+      </div>
       <div id="jobsList"></div>
     </div>
   </div>
@@ -867,7 +905,7 @@
     </div>
 
     <div class="card">
-      <div class="card-head">Hours history</div>
+      <div class="card-head">Hours history <span id="hoursHistoryMonth" style="color:var(--text-muted);font-weight:500;"></span></div>
       <div id="hoursList"></div>
     </div>
   </div>
@@ -920,6 +958,8 @@
   let contractedHours = 160;
   let weeklyHours = 40;
   let reporterName = '';
+  const DEFAULT_CONTRACT_START = '2026-06-09';
+  let contractStart = DEFAULT_CONTRACT_START;
   let syncUrl = '';
   let syncToken = '';
   let carTrips = [];
@@ -1037,12 +1077,15 @@
       contractedHours = typeof s.contractedHours === 'number' ? s.contractedHours : 160;
       weeklyHours = typeof s.weeklyHours === 'number' ? s.weeklyHours : 40;
       reporterName = typeof s.reporterName === 'string' ? s.reporterName : '';
+      contractStart = typeof s.contractStart === 'string' ? s.contractStart : DEFAULT_CONTRACT_START;
       syncUrl = typeof s.syncUrl === 'string' ? s.syncUrl : '';
       syncToken = typeof s.syncToken === 'string' ? s.syncToken : '';
-    }catch(e){ contractedHours = 160; weeklyHours = 40; reporterName = ''; syncUrl = ''; syncToken = ''; }
+    }catch(e){ contractedHours = 160; weeklyHours = 40; reporterName = ''; contractStart = DEFAULT_CONTRACT_START; syncUrl = ''; syncToken = ''; }
     $('contractedHours').value = contractedHours;
     $('weeklyHours').value = weeklyHours;
     $('reporterName').value = reporterName;
+    $('contractStart').value = contractStart;
+    applyContractStart();
     $('syncUrl').value = syncUrl;
     $('syncToken').value = syncToken;
     carTrips = [];
@@ -1059,17 +1102,27 @@
   async function saveTrips(){ rawSet(pKey('trips'), JSON.stringify(trips)); }
   async function saveHours(){ rawSet(pKey('hoursEntries'), JSON.stringify(hoursEntries)); }
   async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); renderFeedBox(); pushJobsSoon(); }
-  async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName, syncUrl, syncToken})); }
+  async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName, contractStart, syncUrl, syncToken})); }
 
   // ---------------- Job helpers ----------------
   function jobsForDate(dateStr){
     return jobs.filter(j => j.startDate <= dateStr && dateStr <= j.endDate);
   }
+  // Job type: 'onsite' (away from home, the default for older jobs), 'remote' (working from home) or 'holiday'.
+  const JOB_TYPES = { onsite: 'On site', remote: 'Remote', holiday: 'Holiday' };
+  function jobType(j){ return j && (j.type === 'remote' || j.type === 'holiday') ? j.type : 'onsite'; }
+  // Only on-site jobs count as time away from home / default trips to Work.
+  function onsiteJobsForDate(dateStr){ return jobsForDate(dateStr).filter(j => jobType(j) === 'onsite'); }
+  // Priority for showing a day: on site, then remote, then holiday.
+  function dayJobType(dateStr){
+    const t = jobsForDate(dateStr).map(jobType);
+    return t.indexOf('onsite') > -1 ? 'onsite' : t.indexOf('remote') > -1 ? 'remote' : t.indexOf('holiday') > -1 ? 'holiday' : '';
+  }
   function actualHoursForDate(dateStr){
     return hoursEntries.filter(h => h.date === dateStr).reduce((a,h)=>a+h.hours,0);
   }
   function dayOverExpected(dateStr){
-    const dj = jobsForDate(dateStr);
+    const dj = jobsForDate(dateStr).filter(j => jobType(j) !== 'holiday');
     if(dj.length === 0) return false;
     const expected = dj[0].expectedHours || 0;
     if(expected <= 0) return false;
@@ -1081,13 +1134,13 @@
     return Math.round((e - s) / 86400000) + 1;
   }
   function openJobsForDate(dateStr){
-    return jobsForDate(dateStr).filter(j=>!j.completed);
+    return jobsForDate(dateStr).filter(j=>!j.completed && jobType(j) !== 'holiday');
   }
   let currentJobHoursId = null;
   function refreshHoursJobSelect(){
     const sel = $('hoursJobPicker');
     const current = sel.value;
-    const open = jobs.filter(j=>!j.completed).slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    const open = jobs.filter(j=>!j.completed && jobType(j) !== 'holiday').slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
     sel.innerHTML = '<option value="">No job / general hours</option>' + open.map(j=>
       '<option value="' + j.id + '">' + escapeHtml(j.title) + ' (' + j.startDate + ' to ' + j.endDate + ')</option>'
     ).join('');
@@ -1272,7 +1325,7 @@
 
   function autoSuggestWorkForDate(){
     if(editingTripId) return; // don't override an in-progress edit
-    if(jobsForDate($('tripDate').value).length > 0 && typeState !== 'work'){
+    if(onsiteJobsForDate($('tripDate').value).length > 0 && typeState !== 'work'){
       typeState = 'work';
       $('typeToggle').dataset.state = 'work';
       $('labelWork').classList.add('on');
@@ -1498,7 +1551,42 @@
     $('cancelJobEditBtn').classList.toggle('hidden', !isEditing);
   }
 
+  let jobFormType = 'onsite';
+  let jobListFilter = 'all';
+  const JOB_TYPE_UI = {
+    onsite: { hint: 'A shift or event that takes you away from home. Give it a date range and a general expected working time, then log your actual hours as you go — the calendar will flag any day you went over.', start: 'Away from', end: 'Away until', ph: 'e.g. Co-op Live deployment' },
+    remote: { hint: 'A day or run of days working from home. No location needed; log your hours as normal.', start: 'From', end: 'Until', ph: 'e.g. Remote work' },
+    holiday: { hint: 'Choose annual leave or unpaid leave, then just the from and until dates. Annual leave adds 8 paid hours for each weekday; unpaid adds none. It shows on the calendar and can still go to TimeTree.', start: 'Holiday from', end: 'Holiday until', ph: 'e.g. Summer holiday' }
+  };
+  function setJobFormType(type){
+    jobFormType = JOB_TYPE_UI[type] ? type : 'onsite';
+    const ui = JOB_TYPE_UI[jobFormType];
+    document.querySelectorAll('#jobTypeTabs .seg-btn').forEach(b=> b.classList.toggle('on', b.dataset.jobtype === jobFormType));
+    $('jobTypeHint').textContent = ui.hint;
+    $('jobStartLabel').textContent = ui.start;
+    $('jobEndLabel').textContent = ui.end;
+    $('jobTitle').placeholder = ui.ph;
+    $('jobLocationField').classList.toggle('hidden', jobFormType !== 'onsite');
+    $('jobTitleField').classList.toggle('hidden', jobFormType === 'holiday');
+    $('jobLeaveField').classList.toggle('hidden', jobFormType !== 'holiday');
+    $('jobExpectedRow').classList.toggle('hidden', jobFormType === 'holiday');
+  }
+  document.querySelectorAll('#jobTypeTabs .seg-btn').forEach(b=>{
+    b.addEventListener('click', ()=> setJobFormType(b.dataset.jobtype));
+  });
+  document.querySelectorAll('#jobFilterTabs .seg-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      jobListFilter = b.dataset.jobfilter;
+      document.querySelectorAll('#jobFilterTabs .seg-btn').forEach(x=> x.classList.toggle('on', x === b));
+      renderJobsList();
+    });
+  });
+
+  setJobFormType('onsite');
+
   function resetJobForm(){
+    setJobFormType('onsite');
+    $('jobLeave').value = 'annual';
     $('jobTitle').value = '';
     $('jobLocation').value = '';
     $('jobExpectedH').value = '';
@@ -1513,7 +1601,9 @@
     if(!j) return;
     editingJobId = id;
     switchView('jobs');
-    $('jobTitle').value = j.title;
+    setJobFormType(jobType(j));
+    $('jobLeave').value = j.leave === 'unpaid' ? 'unpaid' : 'annual';
+    $('jobTitle').value = jobType(j) === 'holiday' ? '' : j.title;
     $('jobLocation').value = j.location || '';
     $('jobStart').value = j.startDate;
     $('jobEnd').value = j.endDate;
@@ -1532,39 +1622,65 @@
   });
 
   $('addJobBtn').addEventListener('click', async ()=>{
-    const title = $('jobTitle').value.trim();
+    const type = jobFormType;
+    // Remote and holiday entries don't need a title; use a sensible default.
+    const leave = $('jobLeave').value === 'unpaid' ? 'unpaid' : 'annual';
+    const title = type === 'holiday' ? (leave === 'unpaid' ? 'Unpaid leave' : 'Annual leave')
+      : ($('jobTitle').value.trim() || (type === 'remote' ? 'Remote work' : ''));
     const start = $('jobStart').value;
     const end = $('jobEnd').value;
     if(!title || !start || !end || end < start) return;
     const data = {
+      type: type,
+      leave: type === 'holiday' ? leave : undefined,
       title: title,
-      location: $('jobLocation').value.trim(),
+      location: type === 'onsite' ? $('jobLocation').value.trim() : '',
       startDate: start,
       endDate: end,
-      expectedHours: hmToDecimal($('jobExpectedH').value, $('jobExpectedM').value),
+      expectedHours: type === 'holiday' ? 0 : (hmToDecimal($('jobExpectedH').value, $('jobExpectedM').value) || 0),
       notes: $('jobNotes').value.trim()
     };
+    let savedJob;
     if(editingJobId){
       const idx = jobs.findIndex(j=>j.id === editingJobId);
-      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId, completed: jobs[idx].completed || false, tt: jobs[idx].tt, sentToTT: jobs[idx].sentToTT }, data);
+      if(idx > -1){ jobs[idx] = Object.assign({ id: editingJobId, completed: jobs[idx].completed || false, tt: jobs[idx].tt, sentToTT: jobs[idx].sentToTT }, data); savedJob = jobs[idx]; }
       editingJobId = null;
       setJobFormEditingUI(false);
     }else{
-      jobs.unshift(Object.assign({ id: Date.now(), completed: false }, data));
+      savedJob = Object.assign({ id: Date.now(), completed: false }, data);
+      jobs.unshift(savedJob);
     }
+    if(savedJob) await syncLeaveHours(savedJob);
     await saveJobs();
     resetJobForm();
-    renderJobsList();
-    refreshHoursJobSelect();
-    renderDashboard();
+    renderAll();
   });
+
+  // Paid annual leave counts as 8 hours worked on each weekday (Mon-Fri) from the contract start.
+  // These are ordinary hours entries tagged with leaveJobId, rebuilt whenever the leave entry changes.
+  const LEAVE_DAY_HOURS = 8;
+  async function syncLeaveHours(job){
+    const before = hoursEntries.length;
+    hoursEntries = hoursEntries.filter(h => h.leaveJobId !== job.id);
+    let added = 0;
+    if(jobType(job) === 'holiday' && job.leave !== 'unpaid'){
+      const stamp = Date.now();
+      for(let d = new Date(job.startDate+'T00:00:00'); d <= new Date(job.endDate+'T00:00:00'); d.setDate(d.getDate()+1)){
+        const dow = d.getDay();
+        const ds = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+        if(dow === 0 || dow === 6 || ds < contractStart) continue;
+        hoursEntries.push({ id: stamp + added, date: ds, hours: LEAVE_DAY_HOURS, jobId: null, leaveJobId: job.id, notes: 'Annual leave (paid)' });
+        added++;
+      }
+    }
+    if(added || before !== hoursEntries.length) await saveHours();
+  }
 
   async function deleteJob(id){
     jobs = jobs.filter(j=>j.id !== id);
+    await syncLeaveHours({ id: id, type: 'onsite' });
     await saveJobs();
-    renderJobsList();
-    refreshHoursJobSelect();
-    renderDashboard();
+    renderAll();
     if(document.getElementById('view-calendar').classList.contains('active')) renderCalendarView();
   }
   window.__deleteJob = deleteJob;
@@ -1585,8 +1701,13 @@
       list.innerHTML = '<div class="empty-state"><strong>No jobs logged yet</strong>Add a job above to start tracking time away from home.</div>';
       return;
     }
-    const sorted = jobs.slice().sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    const sorted = jobs.filter(j=> jobListFilter === 'all' || jobType(j) === jobListFilter).sort((a,b)=> b.startDate.localeCompare(a.startDate));
+    if(sorted.length === 0){
+      list.innerHTML = '<div class="empty-state"><strong>Nothing here</strong>No ' + JOB_TYPES[jobListFilter].toLowerCase() + ' entries yet.</div>';
+      return;
+    }
     list.innerHTML = sorted.map(j=>{
+      const jt = jobType(j);
       const days = jobDaysCount(j);
       const expectedTotal = j.expectedHours * days;
       const actualTotal = hoursEntries.filter(h => h.date >= j.startDate && h.date <= j.endDate).reduce((a,h)=>a+h.hours,0);
@@ -1595,20 +1716,22 @@
       const progressStatus = expectedTotal > 0
         ? '<span class="job-status ' + (isOver ? 'over' : 'under') + '">' + (isOver ? '+' + fmtHrs(diff) + ' hrs over' : (diff===0 ? 'On target' : fmtHrs(diff) + ' hrs under')) + '</span>'
         : '';
-      const completeStatus = '<span class="job-status ' + (j.completed ? 'completed' : 'open') + '">' + (j.completed ? 'Completed' : 'Needs hours') + '</span>';
+      const completeStatus = '<span class="job-status ' + (j.completed ? 'completed' : 'open') + '">'
+        + (j.completed ? 'Completed' : jt === 'onsite' ? 'Needs hours' : jt === 'remote' ? 'Open' : 'Booked') + '</span>';
+      const statsHtml = jt === 'holiday' ? '' : '<div class="job-card-stats">'
+        + '<span>Expected: <strong>' + fmtHrs(j.expectedHours || 0) + ' hrs/day</strong></span>'
+        + '<span>Logged: <strong>' + fmtHrs(actualTotal) + ' hrs</strong></span>'
+        + '</div>';
       return '<div class="job-card' + (j.completed ? ' is-completed' : '') + '">'
         + '<div class="job-card-head"><div>'
-        + '<div class="job-card-title">' + escapeHtml(j.title) + '</div>'
-        + '<div class="job-card-meta">' + (j.location ? escapeHtml(j.location) + ' &middot; ' : '') + j.startDate + ' to ' + j.endDate + ' (' + days + (days===1?' day':' days') + ' away)</div>'
+        + '<div class="job-card-title"><span class="job-type ' + jt + '">' + JOB_TYPES[jt] + '</span>' + escapeHtml(j.title) + '</div>'
+        + '<div class="job-card-meta">' + (jt === 'onsite' && j.location ? escapeHtml(j.location) + ' &middot; ' : '') + j.startDate + ' to ' + j.endDate + ' (' + days + (days===1?' day':' days') + (jt === 'onsite' ? ' away' : '') + ')</div>'
         + '</div>'
         + '<div style="display:flex;align-items:center;gap:2px;">' + completeStatus + progressStatus
         + '<button class="edit-btn" onclick="window.__editJob(' + j.id + ')" aria-label="Edit job">&#9998;</button>'
         + '<button class="del-btn" onclick="window.__deleteJob(' + j.id + ')" aria-label="Delete job">&times;</button></div>'
         + '</div>'
-        + '<div class="job-card-stats">'
-        + '<span>Expected: <strong>' + fmtHrs(j.expectedHours || 0) + ' hrs/day</strong></span>'
-        + '<span>Logged: <strong>' + fmtHrs(actualTotal) + ' hrs</strong></span>'
-        + '</div>'
+        + statsHtml
         + ttButtonHtml(j, 'window.__toggleSent(' + j.id + ')')
         + '<button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="window.__toggleJobComplete(' + j.id + ')">' + (j.completed ? 'Reopen job' : 'Mark complete') + '</button>'
         + '</div>';
@@ -1651,6 +1774,54 @@
     weeklyHours = !isNaN(v) && v >= 0 ? v : 40;
     await saveSettings();
     renderDashboard();
+  });
+
+  // ---------------- Contract start date ----------------
+  // Nothing before this date needs recording: date pickers and calendars start here, and the profile bar shows time at Boxbar.
+  function startMonthIndex(){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(contractStart)) return null;
+    return Number(contractStart.slice(0,4)) * 12 + Number(contractStart.slice(5,7)) - 1;
+  }
+  function tenureText(){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(contractStart)) return '';
+    const [y0, m0, d0] = contractStart.split('-').map(Number);
+    const t = new Date();
+    const today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    const start = new Date(y0, m0 - 1, d0);
+    const sinceLabel = start.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+    if(today < start){
+      const n = Math.round((start - today) / 86400000);
+      return 'Contract starts in <strong>' + n + (n === 1 ? ' day' : ' days') + '</strong> · ' + sinceLabel;
+    }
+    let months = (today.getFullYear() - y0) * 12 + (today.getMonth() - (m0 - 1));
+    if(today.getDate() < d0) months--;
+    const anchor = new Date(y0, m0 - 1 + months, d0);
+    const days = Math.round((today - anchor) / 86400000);
+    const parts = [];
+    if(months > 0) parts.push(months + (months === 1 ? ' month' : ' months'));
+    if(days > 0 || months === 0) parts.push(days + (days === 1 ? ' day' : ' days'));
+    return 'With Boxbar for <strong>' + parts.join(', ') + '</strong> · since ' + sinceLabel;
+  }
+  function applyContractStart(){
+    const min = /^\d{4}-\d{2}-\d{2}$/.test(contractStart) ? contractStart : '';
+    ['tripDate','hoursDate','jobStart','jobEnd','dashRangeFrom','dashRangeTo'].forEach(id=>{
+      if(min) $(id).setAttribute('min', min); else $(id).removeAttribute('min');
+    });
+    const txt = tenureText();
+    $('tenureLine').innerHTML = txt;
+    $('tenureLine').classList.toggle('hidden', !txt);
+    updateCalNav();
+  }
+  function updateCalNav(){
+    const s = startMonthIndex();
+    $('calPrev').disabled = s !== null && (calYear * 12 + calMonth) <= s;
+    $('yearPrev').disabled = s !== null && calYear <= Math.floor(s / 12);
+  }
+  $('contractStart').addEventListener('change', async ()=>{
+    contractStart = $('contractStart').value || '';
+    await saveSettings();
+    applyContractStart();
+    renderAll();
   });
 
   $('reporterName').addEventListener('change', async ()=>{
@@ -1720,7 +1891,14 @@
     if(pushJobsBusy){ pushJobsAgain = true; return; }
     pushJobsBusy = true;
     const profileAtStart = activeProfileId;
-    const list = openJobs().map(j => ({ id: j.id, title: j.title, location: j.location || '', startDate: j.startDate, endDate: j.endDate, notes: j.notes || '', sent: ttState(j) !== 'queued' }));
+    // Remote and holiday entries get a prefix in the calendar title so they read clearly in TimeTree.
+    const feedTitle = j => {
+      const t = jobType(j);
+      if(t === 'onsite') return j.title;
+      const word = t === 'remote' ? 'Remote' : 'Holiday';
+      return (new RegExp('^' + word, 'i').test(j.title) || (t === 'holiday' && /leave/i.test(j.title))) ? j.title : word + ': ' + j.title;
+    };
+    const list = openJobs().map(j => ({ id: j.id, title: feedTitle(j), location: jobType(j) === 'onsite' ? (j.location || '') : '', startDate: j.startDate, endDate: j.endDate, notes: j.notes || '', sent: ttState(j) !== 'queued' }));
     const body = JSON.stringify(list);
     const stamp = syncUrl + '|' + body;
     try{
@@ -1747,7 +1925,7 @@
       id: t.id, startTime: t.startTime, endTime: t.endTime, date,
       start: { lat: t.startLat, lon: t.startLon }, end: { lat: t.endLat, lon: t.endLon },
       from: '', to: '', miles: '', warn: '', loading: true, purpose: '',
-      type: jobsForDate(date).length ? 'work' : 'personal'
+      type: onsiteJobsForDate(date).length ? 'work' : 'personal'
     };
   }
 
@@ -2069,20 +2247,22 @@
     const jobsInPeriod = new Set();
     for(let d = new Date(range.start+'T00:00:00'); d <= new Date(range.end+'T00:00:00'); d.setDate(d.getDate()+1)){
       const dateStr = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
-      const dj = jobsForDate(dateStr);
+      const dj = onsiteJobsForDate(dateStr);
       if(dj.length > 0){ awayDays++; dj.forEach(j=>jobsInPeriod.add(j.id)); }
     }
     $('awayDaysTotal').innerHTML = awayDays + ' <span>days</span>';
     $('awayJobsTotal').textContent = jobsInPeriod.size;
 
-    const todayJobs = jobsForDate(todayISO());
+    const todayJobs = jobsForDate(todayISO()).slice().sort((a,b)=> ['onsite','remote','holiday'].indexOf(jobType(a)) - ['onsite','remote','holiday'].indexOf(jobType(b)));
     const jobBanner = $('currentJobBanner');
     if(todayJobs.length > 0){
       const j = todayJobs[0];
+      const jt = jobType(j);
       const actual = actualHoursForDate(todayISO());
-      const over = j.expectedHours > 0 && actual > j.expectedHours;
+      const over = jt !== 'holiday' && j.expectedHours > 0 && actual > j.expectedHours;
       jobBanner.className = 'overtime-banner ' + (over ? 'over' : 'under');
-      jobBanner.textContent = 'Currently away: ' + j.title + ' (until ' + j.endDate + ')' + (over ? ' \u2014 over expected hours today' : '');
+      jobBanner.textContent = (jt === 'holiday' ? 'On holiday: ' : jt === 'remote' ? 'Working remotely: ' : 'Currently away: ')
+        + j.title + ' (until ' + j.endDate + ')' + (over ? ' \u2014 over expected hours today' : '');
       jobBanner.classList.remove('hidden');
     }else{
       jobBanner.classList.add('hidden');
@@ -2100,7 +2280,8 @@
     trips.forEach(t=>keys.add(monthKeyOf(t.date)));
     hoursEntries.forEach(h=>keys.add(monthKeyOf(h.date)));
     keys.add(monthKeyOf(todayISO()));
-    return Array.from(keys).sort().reverse();
+    const startKey = /^\d{4}-\d{2}-\d{2}$/.test(contractStart) ? monthKeyOf(contractStart) : '';
+    return Array.from(keys).filter(k => !startKey || k >= startKey).sort().reverse();
   }
   function renderReportMonthOptions(){
     const sel = $('reportMonth');
@@ -2355,7 +2536,9 @@
   function computeMonthlySeries(){
     const allDates = trips.map(t=>t.date).concat(hoursEntries.map(h=>h.date));
     if(allDates.length === 0) return { keys: [], labels: [], work: [], personal: [], hours: [] };
-    const minKey = allDates.map(monthKeyOf).sort()[0];
+    let minKey = allDates.map(monthKeyOf).sort()[0];
+    // Charts start at the contract start month (nothing earlier needs recording).
+    if(/^\d{4}-\d{2}-\d{2}$/.test(contractStart)) minKey = monthKeyOf(contractStart);
     const maxKey = monthKeyOf(todayISO());
     const keys = [];
     let [y,m] = minKey.split('-').map(Number);
@@ -2453,13 +2636,20 @@
     }).join('');
   }
 
+  // The history shows the current month only, so it stays short. Earlier months still count in the
+  // Dashboard (pick a month or range), the PDF reports and Trends.
   function renderHoursList(){
     const list = $('hoursList');
-    if(hoursEntries.length === 0){
-      list.innerHTML = '<div class="empty-state"><strong>No hours logged yet</strong>Log hours for a day above to start tracking overtime.</div>';
+    const monthKey = monthKeyOf(todayISO());
+    $('hoursHistoryMonth').textContent = '\u00b7 ' + monthLabel(monthKey);
+    const thisMonth = hoursEntries
+      .filter(h => monthKeyOf(h.date) === monthKey)
+      .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+    if(thisMonth.length === 0){
+      list.innerHTML = '<div class="empty-state"><strong>No hours logged this month</strong>Log hours for a day above to start tracking overtime.</div>';
       return;
     }
-    list.innerHTML = hoursEntries.slice(0,50).map(h=>{
+    list.innerHTML = thisMonth.map(h=>{
       const dateFmt = new Date(h.date+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
       return '<div class="trip-row" style="grid-template-columns:auto 1fr auto;">'
         + '<div class="trip-date">' + dateFmt + '</div>'
@@ -2518,9 +2708,9 @@
     });
   });
 
-  $('calPrev').addEventListener('click', ()=>{ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
+  $('calPrev').addEventListener('click', ()=>{ if($('calPrev').disabled) return; calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
   $('calNext').addEventListener('click', ()=>{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
-  $('yearPrev').addEventListener('click', ()=>{ calYear--; renderYearView(); });
+  $('yearPrev').addEventListener('click', ()=>{ if($('yearPrev').disabled) return; calYear--; renderYearView(); });
   $('yearNext').addEventListener('click', ()=>{ calYear++; renderYearView(); });
 
   function pad(n){ return n < 10 ? '0'+n : ''+n; }
@@ -2530,6 +2720,7 @@
 
   function renderYearView(){
     $('calYearLabel').textContent = String(calYear);
+    updateCalNav();
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const stats = [];
     let maxMiles = 0;
@@ -2572,6 +2763,7 @@
   function renderCalendar(){
     const label = new Date(calYear, calMonth, 1).toLocaleDateString('en-GB',{month:'long', year:'numeric'});
     $('calMonthLabel').textContent = label;
+    updateCalNav();
 
     const firstDay = new Date(calYear, calMonth, 1);
     let startOffset = firstDay.getDay() - 1; // Monday = 0
@@ -2597,11 +2789,12 @@
       if(hasWork) dots += '<span class="dot work"></span>';
       if(hasPersonal) dots += '<span class="dot personal"></span>';
       const hoursBadge = dayHours > 0 ? '<span class="cal-hours-badge">' + dayHours.toFixed(1) + 'h</span>' : '';
-      const isAway = jobsForDate(dateStr).length > 0;
+      const dayType = dayJobType(dateStr);
       const isOver = dayOverExpected(dateStr);
       let cellClass = 'cal-cell';
       if(isToday) cellClass += ' today';
-      if(isAway) cellClass += ' away';
+      if(dayType === 'onsite') cellClass += ' away';
+      else if(dayType) cellClass += ' ' + dayType;
       if(isOver) cellClass += ' over-expected';
       html += '<div class="' + cellClass + '" data-date="' + dateStr + '">'
         + '<div class="cal-daynum">' + dayNum + '</div>'
@@ -2627,12 +2820,14 @@
     let html = '';
 
     if(dayJobs.length > 0){
-      const j = dayJobs[0];
+      const j = dayJobs.slice().sort((a,b)=> ['onsite','remote','holiday'].indexOf(jobType(a)) - ['onsite','remote','holiday'].indexOf(jobType(b)))[0];
+      const jt = jobType(j);
       const actual = actualHoursForDate(dateStr);
-      const over = j.expectedHours > 0 && actual > j.expectedHours;
+      const over = jt !== 'holiday' && j.expectedHours > 0 && actual > j.expectedHours;
       html += '<div class="overtime-banner ' + (over ? 'over' : 'under') + '" style="margin-bottom:14px;margin-top:0;">'
-        + escapeHtml(j.title) + (j.location ? ' &middot; ' + escapeHtml(j.location) : '')
-        + (j.expectedHours > 0 ? ' &mdash; expected ' + fmtHrs(j.expectedHours) + ' hrs, logged ' + fmtHrs(actual) + ' hrs'
+        + '<span class="job-type ' + jt + '">' + JOB_TYPES[jt] + '</span>'
+        + escapeHtml(j.title) + (jt === 'onsite' && j.location ? ' &middot; ' + escapeHtml(j.location) : '')
+        + (jt !== 'holiday' && j.expectedHours > 0 ? ' &mdash; expected ' + fmtHrs(j.expectedHours) + ' hrs, logged ' + fmtHrs(actual) + ' hrs'
           + (over ? ' (over)' : '') : '')
         + '</div>';
       // TimeTree: one button per open job on this day
