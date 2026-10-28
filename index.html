@@ -101,6 +101,23 @@
     transition:all .15s ease; font-family:'Space Grotesk',sans-serif; user-select:none;
   }
   .nav-item.active{background:linear-gradient(135deg,var(--purple),var(--purple-deep)); color:#fff; box-shadow:0 3px 14px var(--purple-glow);}
+  .nav-badge{display:inline-block; margin-left:6px; min-width:18px; padding:1px 6px; border-radius:9px; background:var(--amber); color:#1a1200; font-size:11px; font-weight:700; line-height:16px;}
+  .nav-badge:empty{display:none;}
+
+  .car-trip{border:1px solid var(--border); background:var(--surface-raised); border-radius:12px; padding:14px; margin-bottom:12px;}
+  .car-trip-when{font-size:12px; color:var(--text-muted); margin-bottom:6px;}
+  .car-trip-route{font-size:13px; line-height:1.45; margin-bottom:10px; word-break:break-word;}
+  .car-trip-route span{color:var(--text-muted);}
+  .car-trip-warn{font-size:12px; color:var(--amber); margin:-2px 0 10px; line-height:1.4;}
+  .car-trip-fields{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;}
+  .car-trip-fields input{width:100%;}
+  .car-trip-fields label{display:block; font-size:11.5px; color:var(--text-muted); margin-bottom:4px;}
+  .seg{display:flex; gap:6px; margin-bottom:10px;}
+  .seg-btn{flex:1; text-align:center; padding:10px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif; user-select:none;}
+  .seg-btn.on-work{background:linear-gradient(135deg,var(--purple),var(--purple-deep)); border-color:transparent; color:#fff;}
+  .seg-btn.on-personal{background:linear-gradient(135deg,var(--teal),#1a9e8e); border-color:transparent; color:#04130f;}
+  .car-trip-actions{display:flex; gap:8px;}
+  .car-trip-actions button{flex:1; width:auto;}
 
   .view{display:none;}
   .view.active{display:block;}
@@ -446,7 +463,7 @@
   </div>
 
   <div class="nav">
-    <div class="nav-item active" data-view="dashboard">Dashboard</div>
+    <div class="nav-item active" data-view="dashboard">Dashboard<span class="nav-badge" id="navBadge"></span></div>
     <div class="nav-item" data-view="calendar">Calendar</div>
     <div class="nav-item" data-view="jobs">Jobs</div>
     <div class="nav-item" data-view="trip">Log Trip</div>
@@ -456,6 +473,13 @@
 
   <!-- ============ DASHBOARD ============ -->
   <div class="view active" id="view-dashboard">
+
+    <div class="card hidden" id="carTripsCard">
+      <div class="card-head">Car trips to confirm <span id="carTripsCount" style="color:var(--amber);"></span></div>
+      <div id="carTripList"></div>
+      <div class="gauge-status" id="carTripStatus" style="text-align:left;margin-bottom:10px;"></div>
+      <button class="btn-secondary" id="carSyncBtn" style="width:100%;">Check for new trips</button>
+    </div>
 
     <div class="card">
       <div class="card-head">Viewing period</div>
@@ -591,6 +615,24 @@
         <button class="btn-secondary" id="exportHoursBtn">Export hours log (PDF)</button>
       </div>
       <div class="gauge-status" id="exportStatus" style="text-align:left;margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Car trip sync</div>
+      <div class="hint" style="margin-top:-4px;">Connects to your Google Apps Script so trips recorded by your iPhone&rsquo;s CarPlay shortcuts appear here to confirm. Enter these in the app you actually use (the home-screen app keeps its own settings).</div>
+      <div class="field">
+        <label for="syncUrl">Web app URL</label>
+        <input type="url" id="syncUrl" placeholder="https://script.google.com/macros/s/.../exec" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="syncToken">Secret token</label>
+        <input type="password" id="syncToken" placeholder="The SECRET from your script" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="row-2">
+        <button class="btn-secondary" id="saveSyncBtn">Save</button>
+        <button class="btn-secondary" id="testSyncBtn">Test connection</button>
+      </div>
+      <div class="gauge-status" id="syncSettingsStatus" style="text-align:left;margin-top:10px;"></div>
     </div>
 
     <div class="card" id="installCard">
@@ -913,6 +955,12 @@
   let contractedHours = 160;
   let weeklyHours = 40;
   let reporterName = '';
+  let syncUrl = '';
+  let syncToken = '';
+  let carTrips = [];
+  let carSyncBusy = false;
+  let lastCarSync = 0;
+  let carRenderDeferred = false;
 
   let mode = 'odometer';
   let filter = 'all';
@@ -1032,10 +1080,17 @@
       contractedHours = typeof s.contractedHours === 'number' ? s.contractedHours : 160;
       weeklyHours = typeof s.weeklyHours === 'number' ? s.weeklyHours : 40;
       reporterName = typeof s.reporterName === 'string' ? s.reporterName : '';
-    }catch(e){ contractedHours = 160; weeklyHours = 40; reporterName = ''; }
+      syncUrl = typeof s.syncUrl === 'string' ? s.syncUrl : '';
+      syncToken = typeof s.syncToken === 'string' ? s.syncToken : '';
+    }catch(e){ contractedHours = 160; weeklyHours = 40; reporterName = ''; syncUrl = ''; syncToken = ''; }
     $('contractedHours').value = contractedHours;
     $('weeklyHours').value = weeklyHours;
     $('reporterName').value = reporterName;
+    $('syncUrl').value = syncUrl;
+    $('syncToken').value = syncToken;
+    carTrips = [];
+    lastCarSync = 0;
+    $('syncSettingsStatus').textContent = '';
     $('fromLoc').value = '';
     try{
       const raw = rawGet(pKey('activeGpsTrip'));
@@ -1053,11 +1108,12 @@
     renderProfileSelect();
     autoSuggestWorkForDate();
     renderAll();
+    syncCarTrips();
   }
   async function saveTrips(){ rawSet(pKey('trips'), JSON.stringify(trips)); }
   async function saveHours(){ rawSet(pKey('hoursEntries'), JSON.stringify(hoursEntries)); }
   async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); }
-  async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName})); }
+  async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName, syncUrl, syncToken})); }
 
   // ---------------- Job helpers ----------------
   function jobsForDate(dateStr){
@@ -1888,6 +1944,234 @@
   $('reporterName').addEventListener('change', async ()=>{
     reporterName = $('reporterName').value.trim();
     await saveSettings();
+  });
+
+  // ---------------- Car trip sync (CarPlay shortcuts -> Google Apps Script -> here) ----------------
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const round1 = n => Math.round(n * 10) / 10;
+
+  function localDateStr(ms){
+    const d = new Date(ms);
+    return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  }
+  function haversineMiles(a, b){
+    const R = 3958.8, rad = x => x * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+    const h = Math.sin(dLat/2)**2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon/2)**2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function coordLabel(c){ return c.lat.toFixed(4) + ', ' + c.lon.toFixed(4); }
+
+  async function backendGet(params){
+    const q = new URLSearchParams(Object.assign({ token: syncToken }, params));
+    const sep = syncUrl.indexOf('?') === -1 ? '?' : '&';
+    const res = await fetch(syncUrl + sep + q.toString());
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    let data;
+    try{ data = await res.json(); }catch(e){ throw new Error('Unexpected reply – check the URL ends in /exec'); }
+    if(!data.ok) throw new Error(data.error === 'unauthorised' ? 'Token not accepted' : (data.error || 'Request failed'));
+    return data;
+  }
+
+  function carSyncConfigured(){ return !!(syncUrl && syncToken); }
+
+  function setCarStatus(msg){ $('carTripStatus').textContent = msg || ''; }
+
+  function newCarTripState(t){
+    const date = localDateStr(t.startTime);
+    return {
+      id: t.id, startTime: t.startTime, endTime: t.endTime, date,
+      start: { lat: t.startLat, lon: t.startLon }, end: { lat: t.endLat, lon: t.endLon },
+      from: '', to: '', miles: '', warn: '', loading: true, purpose: '',
+      type: jobsForDate(date).length ? 'work' : 'personal'
+    };
+  }
+
+  async function syncCarTrips(){
+    if(!carSyncConfigured()){ renderCarTrips(); return; }
+    if(carSyncBusy) return;
+    carSyncBusy = true;
+    lastCarSync = Date.now();
+    const profileAtStart = activeProfileId;
+    $('carSyncBtn').disabled = true;
+    setCarStatus('Checking for new trips…');
+    try{
+      const data = await backendGet({ action: 'pending' });
+      if(profileAtStart !== activeProfileId) return;
+      const known = new Set(carTrips.map(c => c.id));
+      const done = new Set(trips.map(t => t.syncId).filter(Boolean));
+      const dupes = [];
+      (data.trips || []).forEach(t => {
+        if(done.has(t.id)){ dupes.push(t.id); return; }
+        if(known.has(t.id)) return;
+        carTrips.push(newCarTripState(t));
+      });
+      carTrips.sort((a, b) => a.startTime - b.startTime);
+      if(dupes.length){ backendGet({ action: 'ack', ids: dupes.join(',') }).catch(()=>{}); }
+      setCarStatus('');
+      renderCarTrips();
+      await enrichCarTrips(profileAtStart);
+    }catch(e){
+      setCarStatus('Could not reach your trip backend: ' + e.message);
+      renderCarTrips();
+    }finally{
+      carSyncBusy = false;
+      $('carSyncBtn').disabled = false;
+    }
+  }
+
+  async function enrichCarTrips(profileAtStart){
+    let first = true;
+    for(const c of carTrips.slice()){
+      if(!c.loading) continue;
+      if(profileAtStart !== activeProfileId) return;
+      if(!first) await sleep(1100); // Nominatim allows about one request per second
+      first = false;
+      c.from = await reverseGeocode(c.start);
+      await sleep(1100);
+      c.to = await reverseGeocode(c.end);
+      const straight = haversineMiles(c.start, c.end);
+      if(straight < 0.25){
+        c.miles = '';
+        c.warn = 'Start and end are the same place, so the distance can’t be worked out. Type the miles (or use the odometer).';
+      }else{
+        try{
+          const r = await routeInfo([c.start, c.end]);
+          if(r.miles < 0.2){
+            c.miles = '';
+            c.warn = 'Route came out as almost zero. Type the miles instead.';
+          }else{
+            c.miles = String(round1(r.miles));
+          }
+        }catch(e){
+          c.miles = '';
+          c.warn = 'Couldn’t calculate the route. Type the miles instead.';
+        }
+      }
+      c.loading = false;
+      if(profileAtStart !== activeProfileId) return;
+      renderCarTrips();
+    }
+  }
+
+  function carTripHtml(c){
+    const when = new Date(c.startTime).toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' })
+      + ', ' + new Date(c.startTime).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const route = c.loading
+      ? '<span>Looking up addresses…</span>'
+      : escapeHtml(c.from || coordLabel(c.start)) + '<br><span>to</span> ' + escapeHtml(c.to || coordLabel(c.end));
+    return '<div class="car-trip" data-id="' + escapeHtml(c.id) + '">'
+      + '<div class="car-trip-when">' + escapeHtml(when) + '</div>'
+      + '<div class="car-trip-route">' + route + '</div>'
+      + (c.warn ? '<div class="car-trip-warn">' + escapeHtml(c.warn) + '</div>' : '')
+      + '<div class="seg">'
+      +   '<div class="seg-btn' + (c.type === 'work' ? ' on-work' : '') + '" data-act="type" data-type="work">Work</div>'
+      +   '<div class="seg-btn' + (c.type === 'personal' ? ' on-personal' : '') + '" data-act="type" data-type="personal">Personal</div>'
+      + '</div>'
+      + '<div class="car-trip-fields">'
+      +   '<div><label>Miles</label><input type="number" inputmode="decimal" step="0.1" min="0" data-field="miles" value="' + escapeHtml(c.miles) + '" placeholder="0.0"></div>'
+      +   '<div><label>Note (optional)</label><input type="text" data-field="purpose" value="' + escapeHtml(c.purpose) + '" placeholder="e.g. Site visit"></div>'
+      + '</div>'
+      + '<div class="car-trip-actions">'
+      +   '<button class="btn-primary" data-act="confirm">Add to log</button>'
+      +   '<button class="btn-secondary" data-act="dismiss">Dismiss</button>'
+      + '</div>'
+      + '</div>';
+  }
+
+  function renderCarTrips(){
+    const configured = carSyncConfigured();
+    $('carTripsCard').classList.toggle('hidden', !configured);
+    const n = carTrips.length;
+    $('carTripsCount').textContent = n ? '(' + n + ')' : '';
+    $('navBadge').textContent = n ? String(n) : '';
+    const list = $('carTripList');
+    if(!configured){ list.innerHTML = ''; return; }
+    // Keep focus/typing intact: don't rebuild while a field in the list is focused.
+    const ae = document.activeElement;
+    if(ae && list.contains(ae) && ae.tagName === 'INPUT'){ carRenderDeferred = true; return; }
+    carRenderDeferred = false;
+    list.innerHTML = n
+      ? carTrips.map(carTripHtml).join('')
+      : '<div class="hint" style="margin:0 0 14px;">No trips waiting. Drives recorded by CarPlay will appear here.</div>';
+  }
+
+  function findCarTrip(id){ return carTrips.find(c => c.id === id); }
+
+  async function confirmCarTrip(id){
+    const c = findCarTrip(id);
+    if(!c) return;
+    const miles = parseFloat(c.miles);
+    if(isNaN(miles) || miles <= 0){ setCarStatus('Enter the miles for this trip first.'); return; }
+    setCarStatus('');
+    const tripId = Date.now() + Math.floor(Math.random() * 1000);
+    trips.unshift({
+      id: tripId, date: c.date,
+      from: c.from || coordLabel(c.start), to: c.to || coordLabel(c.end), via: [],
+      purpose: c.purpose.trim() || 'CarPlay trip',
+      type: c.type, distance: round1(miles), mode: 'carplay', syncId: c.id
+    });
+    await saveTrips();
+    carTrips = carTrips.filter(x => x.id !== id);
+    renderAll();
+    renderCarTrips();
+    backendGet({ action: 'ack', ids: id }).catch(()=>{});
+  }
+
+  async function dismissCarTrip(id){
+    if(!window.confirm('Dismiss this trip? It will be deleted without being logged.')) return;
+    carTrips = carTrips.filter(x => x.id !== id);
+    renderCarTrips();
+    try{ await backendGet({ action: 'ack', ids: id }); }catch(e){ setCarStatus('Dismissed here, but couldn’t reach the backend to delete it.'); }
+  }
+
+  $('carTripList').addEventListener('click', e => {
+    const el = e.target.closest('[data-act]');
+    if(!el) return;
+    const card = el.closest('.car-trip');
+    if(!card) return;
+    const id = card.dataset.id, c = findCarTrip(id);
+    if(!c) return;
+    const act = el.dataset.act;
+    if(act === 'type'){ c.type = el.dataset.type; renderCarTrips(); }
+    else if(act === 'confirm'){ confirmCarTrip(id); }
+    else if(act === 'dismiss'){ dismissCarTrip(id); }
+  });
+  $('carTripList').addEventListener('input', e => {
+    const f = e.target.dataset && e.target.dataset.field;
+    if(!f) return;
+    const c = findCarTrip(e.target.closest('.car-trip').dataset.id);
+    if(c) c[f] = e.target.value;
+  });
+  // Re-render after typing stops, but late enough that a tap on a button still lands.
+  $('carTripList').addEventListener('focusout', () => { setTimeout(() => { if(carRenderDeferred) renderCarTrips(); }, 500); });
+
+  $('carSyncBtn').addEventListener('click', syncCarTrips);
+
+  $('saveSyncBtn').addEventListener('click', async () => {
+    syncUrl = $('syncUrl').value.trim();
+    syncToken = $('syncToken').value.trim();
+    await saveSettings();
+    $('syncSettingsStatus').textContent = (syncUrl && syncToken) ? 'Saved.' : 'Saved. Sync is off until both fields are filled in.';
+    renderCarTrips();
+    if(carSyncConfigured()) syncCarTrips();
+  });
+
+  $('testSyncBtn').addEventListener('click', async () => {
+    const url = $('syncUrl').value.trim(), tok = $('syncToken').value.trim();
+    if(!url || !tok){ $('syncSettingsStatus').textContent = 'Enter the URL and token first.'; return; }
+    syncUrl = url; syncToken = tok;
+    $('syncSettingsStatus').textContent = 'Testing…';
+    try{
+      const r = await backendGet({ action: 'ping' });
+      $('syncSettingsStatus').textContent = 'Connected. ' + r.pending + ' trip' + (r.pending === 1 ? '' : 's') + ' waiting. Press Save to keep these settings.';
+    }catch(e){
+      $('syncSettingsStatus').textContent = 'Failed: ' + e.message;
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible' && carSyncConfigured() && Date.now() - lastCarSync > 20000) syncCarTrips();
   });
 
   // ---------------- Filters ----------------
