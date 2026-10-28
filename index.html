@@ -618,6 +618,16 @@
           <button class="btn-secondary" id="copyFeedBtn" type="button">Copy feed link</button>
         </div>
         <div class="gauge-status" id="feedStatus" style="text-align:left;margin-top:10px;"></div>
+
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="card-head" style="margin-bottom:6px;">New jobs for TimeTree <span id="queueCount" style="color:var(--amber);"></span></div>
+          <div class="hint" style="margin-top:0;">A second calendar holding only jobs you haven&rsquo;t sent to TimeTree yet. Import this one into TimeTree, then press &ldquo;Mark as sent&rdquo; so the next import only has new jobs. Completed jobs are left out of both calendars.</div>
+          <div class="row-2">
+            <a class="btn-secondary" id="queueSubscribeLink" href="#" style="display:block;text-align:center;text-decoration:none;">Subscribe on iPhone</a>
+            <button class="btn-secondary" id="copyQueueBtn" type="button">Copy feed link</button>
+          </div>
+          <button class="btn-secondary" id="markSentBtn" type="button" style="width:100%;margin-top:10px;">Mark all as sent to TimeTree</button>
+        </div>
       </div>
     </div>
 
@@ -1048,7 +1058,7 @@
   }
   async function saveTrips(){ rawSet(pKey('trips'), JSON.stringify(trips)); }
   async function saveHours(){ rawSet(pKey('hoursEntries'), JSON.stringify(hoursEntries)); }
-  async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); pushJobsSoon(); }
+  async function saveJobs(){ rawSet(pKey('jobs'), JSON.stringify(jobs)); renderFeedBox(); pushJobsSoon(); }
   async function saveSettings(){ rawSet(pKey('settings'), JSON.stringify({contractedHours, weeklyHours, reporterName, syncUrl, syncToken})); }
 
   // ---------------- Job helpers ----------------
@@ -1536,7 +1546,7 @@
     };
     if(editingJobId){
       const idx = jobs.findIndex(j=>j.id === editingJobId);
-      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId, completed: jobs[idx].completed || false }, data);
+      if(idx > -1) jobs[idx] = Object.assign({ id: editingJobId, completed: jobs[idx].completed || false, sentToTT: jobs[idx].sentToTT || false }, data);
       editingJobId = null;
       setJobFormEditingUI(false);
     }else{
@@ -1599,10 +1609,24 @@
         + '<span>Expected: <strong>' + fmtHrs(j.expectedHours || 0) + ' hrs/day</strong></span>'
         + '<span>Logged: <strong>' + fmtHrs(actualTotal) + ' hrs</strong></span>'
         + '</div>'
+        + (carSyncConfigured() && !j.completed
+            ? '<button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="window.__toggleSent(' + j.id + ')">'
+              + (j.sentToTT ? 'In TimeTree ✓ (tap to send again)' : 'Waiting to send to TimeTree (tap if already there)') + '</button>'
+            : '')
         + '<button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="window.__toggleJobComplete(' + j.id + ')">' + (j.completed ? 'Reopen job' : 'Mark complete') + '</button>'
         + '</div>';
     }).join('');
   }
+
+  // Per-job control for the TimeTree queue: jobs already typed into TimeTree can be marked as sent without importing.
+  async function toggleSent(id){
+    const job = jobs.find(j=>j.id===id);
+    if(!job) return;
+    job.sentToTT = !job.sentToTT;
+    await saveJobs();
+    renderJobsList();
+  }
+  window.__toggleSent = toggleSent;
 
   $('contractedHours').addEventListener('change', async ()=>{
     const v = parseFloat($('contractedHours').value);
@@ -1653,14 +1677,21 @@
   function carSyncConfigured(){ return !!(syncUrl && syncToken); }
 
   // ---- Jobs calendar feed (published by the same backend; TimeTree imports it via the iPhone calendar) ----
-  function feedUrl(){
-    return syncUrl + (syncUrl.indexOf('?') === -1 ? '?' : '&') + 'action=calendar&token=' + encodeURIComponent(syncToken);
+  function feedUrl(onlyNew){
+    return syncUrl + (syncUrl.indexOf('?') === -1 ? '?' : '&') + 'action=calendar' + (onlyNew ? '&list=new' : '') + '&token=' + encodeURIComponent(syncToken);
   }
+  // Completed jobs are left out of both calendars.
+  const openJobs = () => jobs.filter(j => !j.completed);
+  const unsentJobs = () => openJobs().filter(j => !j.sentToTT);
   function renderFeedBox(){
     const on = carSyncConfigured();
     $('feedBox').classList.toggle('hidden', !on);
     if(!on) return;
-    $('feedSubscribeLink').href = feedUrl().replace(/^https?:\/\//, 'webcal://');
+    $('feedSubscribeLink').href = feedUrl(false).replace(/^https?:\/\//, 'webcal://');
+    $('queueSubscribeLink').href = feedUrl(true).replace(/^https?:\/\//, 'webcal://');
+    const n = unsentJobs().length;
+    $('queueCount').textContent = n ? '(' + n + ' waiting)' : '(none waiting)';
+    $('markSentBtn').disabled = n === 0;
   }
 
   let pushJobsTimer = null;
@@ -1672,13 +1703,13 @@
   async function pushJobs(){
     if(!carSyncConfigured()) return;
     const profileAtStart = activeProfileId;
-    const list = jobs.map(j => ({ id: j.id, title: j.title, location: j.location || '', startDate: j.startDate, endDate: j.endDate, notes: j.notes || '' }));
+    const list = openJobs().map(j => ({ id: j.id, title: j.title, location: j.location || '', startDate: j.startDate, endDate: j.endDate, notes: j.notes || '', sent: !!j.sentToTT }));
     try{
       // No Content-Type header, so the browser sends it as plain text and no pre-flight check is needed.
       const res = await fetch(syncUrl, { method: 'POST', body: JSON.stringify({ token: syncToken, action: 'setjobs', jobs: list }) });
       const data = await res.json();
       if(profileAtStart !== activeProfileId) return;
-      $('feedStatus').textContent = data.ok ? ('Feed updated with ' + data.saved + ' job' + (data.saved === 1 ? '' : 's') + '.') : ('Feed not updated: ' + (data.error || 'unknown error'));
+      $('feedStatus').textContent = data.ok ? ('Feed updated with ' + data.saved + ' open job' + (data.saved === 1 ? '' : 's') + '.') : ('Feed not updated: ' + (data.error || 'unknown error'));
     }catch(e){
       $('feedStatus').textContent = 'Couldn’t update the feed (' + e.message + '). It will retry next time you change a job or open the app.';
     }
@@ -1864,16 +1895,29 @@
     await saveSettings();
     $('syncSettingsStatus').textContent = (syncUrl && syncToken) ? 'Saved.' : 'Saved. Sync is off until both fields are filled in.';
     renderCarTrips();
+    renderJobsList();
     if(carSyncConfigured()){ syncCarTrips(); pushJobs(); }
   });
 
-  $('copyFeedBtn').addEventListener('click', async () => {
+  async function copyFeedLink(onlyNew){
     try{
-      await navigator.clipboard.writeText(feedUrl());
-      $('feedStatus').textContent = 'Feed link copied.';
+      await navigator.clipboard.writeText(feedUrl(onlyNew));
+      $('feedStatus').textContent = (onlyNew ? 'New-jobs feed' : 'Feed') + ' link copied.';
     }catch(e){
-      window.prompt('Copy this feed link:', feedUrl());
+      window.prompt('Copy this feed link:', feedUrl(onlyNew));
     }
+  }
+  $('copyFeedBtn').addEventListener('click', () => copyFeedLink(false));
+  $('copyQueueBtn').addEventListener('click', () => copyFeedLink(true));
+
+  $('markSentBtn').addEventListener('click', async () => {
+    const pending = unsentJobs();
+    if(!pending.length) return;
+    if(!window.confirm('Mark ' + pending.length + ' job' + (pending.length === 1 ? '' : 's') + ' as sent to TimeTree? The new-jobs calendar will be emptied.')) return;
+    pending.forEach(j => { j.sentToTT = true; });
+    await saveJobs();
+    renderJobsList();
+    $('feedStatus').textContent = 'Marked as sent. The new-jobs calendar will be empty until you add more jobs.';
   });
 
   $('testSyncBtn').addEventListener('click', async () => {
